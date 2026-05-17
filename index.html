@@ -370,15 +370,20 @@ a { color: inherit; text-decoration: none; }
 /* ============================================================
    FOGGY EDGE — soft feathered image edge
    ============================================================ */
-.foggy-edge,
-.foggy {
+.foggy-edge {
   position: relative;
   isolation: isolate;
   border: 0 !important;
   background: transparent !important;
   overflow: hidden;
-  -webkit-mask-image: radial-gradient(ellipse 120% 115% at 50% 50%, #000 52%, rgba(0,0,0,.96) 62%, rgba(0,0,0,.78) 74%, rgba(0,0,0,.4) 86%, transparent 100%);
-          mask-image: radial-gradient(ellipse 120% 115% at 50% 50%, #000 52%, rgba(0,0,0,.96) 62%, rgba(0,0,0,.78) 74%, rgba(0,0,0,.4) 86%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 112% 108% at 50% 50%, #000 48%, rgba(0,0,0,.94) 58%, rgba(0,0,0,.72) 70%, rgba(0,0,0,.38) 82%, transparent 100%);
+          mask-image: radial-gradient(ellipse 112% 108% at 50% 50%, #000 48%, rgba(0,0,0,.94) 58%, rgba(0,0,0,.72) 70%, rgba(0,0,0,.38) 82%, transparent 100%);
+}
+
+/* round image containers */
+.foggy {
+  border-radius: 16px;
+  overflow: hidden;
 }
 .foggy-edge::after {
   content: "";
@@ -1492,9 +1497,8 @@ function MountainRidge({ y, opacity, color, seed = 1, height = 0.42 }) {
 
 function HeroRidges({ scroll }) {
   return (
-    <div className="ridges">
+    <div className="ridges" style={{ overflow: "hidden" }}>
          <img
-            className="foggy"
             src="assets/images/hero_dawn.png"
         alt=""
         style={{
@@ -1655,7 +1659,7 @@ function Origin({ t }) {
         </div>
       </Reveal>
       <Reveal>
-        <div className="origin-photo foggy-edge">
+        <div className="origin-photo foggy-edge foggy">
           <img src="assets/images/origin_terroir.png" alt="奇萊山黑岩礫石與茶葉特寫" />
           <div className="caption">BLACK ROCK · 黑岩礫石 · QILAI 2050 M</div>
         </div>
@@ -1709,7 +1713,7 @@ function Story({ t }) {
           </div>
         </Reveal>
         <Reveal>
-          <div className="img-wrap foggy-edge" style={{ aspectRatio: "4/5" }}>
+            <div className="img-wrap foggy-edge foggy" style={{ aspectRatio: "4/5" }}>
             <img src="assets/images/story_founder.png" alt=""
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block",
                        filter: "saturate(0.88) contrast(1.02)" }} />
