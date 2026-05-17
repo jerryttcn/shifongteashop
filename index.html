@@ -370,14 +370,15 @@ a { color: inherit; text-decoration: none; }
 /* ============================================================
    FOGGY EDGE — soft feathered image edge
    ============================================================ */
-.foggy-edge {
+.foggy-edge,
+.foggy {
   position: relative;
   isolation: isolate;
   border: 0 !important;
   background: transparent !important;
   overflow: hidden;
-  -webkit-mask-image: radial-gradient(ellipse 112% 108% at 50% 50%, #000 48%, rgba(0,0,0,.94) 58%, rgba(0,0,0,.72) 70%, rgba(0,0,0,.38) 82%, transparent 100%);
-          mask-image: radial-gradient(ellipse 112% 108% at 50% 50%, #000 48%, rgba(0,0,0,.94) 58%, rgba(0,0,0,.72) 70%, rgba(0,0,0,.38) 82%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 120% 115% at 50% 50%, #000 52%, rgba(0,0,0,.96) 62%, rgba(0,0,0,.78) 74%, rgba(0,0,0,.4) 86%, transparent 100%);
+          mask-image: radial-gradient(ellipse 120% 115% at 50% 50%, #000 52%, rgba(0,0,0,.96) 62%, rgba(0,0,0,.78) 74%, rgba(0,0,0,.4) 86%, transparent 100%);
 }
 .foggy-edge::after {
   content: "";
@@ -789,7 +790,7 @@ window.I18N = {
       title_c: "冷香。",
       sub: "海拔兩千零五十公尺。奇萊山南麓的茶,用整個冬天等你。",
       cta_primary: "選一款冷香",
-      cta_secondary: "讀蔡晃年的故事",
+      cta_secondary: "創辦人的故事",
     },
     marquee: ["奇萊山", "2050 公尺", "冷香", "黑岩礫石", "雲霧 280 天", "南麓茶區"],
     origin: {
@@ -1492,8 +1493,9 @@ function MountainRidge({ y, opacity, color, seed = 1, height = 0.42 }) {
 function HeroRidges({ scroll }) {
   return (
     <div className="ridges">
-      <img
-        src="assets/images/hero_dawn.png"
+         <img
+            className="foggy"
+            src="assets/images/hero_dawn.png"
         alt=""
         style={{
           position: "absolute", inset: 0,
@@ -1748,7 +1750,12 @@ function Series({ t, onAdd }) {
             return (
               <div key={i} className="series-row" onClick={() => onAdd && onAdd(it)}>
                 <div className="thumb">
-                  <img src={`assets/images/tea_${imgName}.png`} alt="" />
+                    <img
+                        className="foggy"
+                        src={`assets/images/tea_${imgName}.png`}
+                        alt=""
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                      />
                 </div>
                 <div className="name-col">
                   <span className="idx-small">{it.idx}</span>
