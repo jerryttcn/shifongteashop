@@ -189,8 +189,8 @@ a { color: inherit; text-decoration: none; }
 }
 @supports (-webkit-text-stroke: 1px currentColor) {
   .hero .display .out {
-    -webkit-text-stroke: 1px currentColor;
     color: transparent;
+    -webkit-text-stroke: 1px var(--paper);
     opacity: 0.55;
     text-shadow: none;
   }
@@ -547,18 +547,50 @@ a { color: inherit; text-decoration: none; }
 }
 .box {
   position: absolute; top: 50%; left: 50%;
-  width: 320px; height: 200px;
+  width: 320px; height: 220px;
   transform-style: preserve-3d;
   transform: translate(-50%, -55%) rotateX(-18deg) rotateY(-28deg);
   transition: transform .15s ease;
 }
+/* ---- ribbon/band around box (wraps all 4 sides) ---- */
+.box .ribbon {
+  position: absolute;
+  top: 36%; left: 0; right: 0;
+  height: 3px;
+  margin-top: -1.5px;
+  background: linear-gradient(90deg,
+    transparent 0%, transparent 4%,
+    var(--accent-2) 4%, var(--accent) 20%, var(--accent-2) 50%, var(--accent) 80%, var(--accent-2) 96%,
+    transparent 96%, transparent 100%);
+  z-index: 10;
+}
+.box .ribbon.front { transform: translateZ(61px); }
+.box .ribbon.back { transform: rotateY(180deg) translateZ(61px); }
+.box .ribbon.right {
+  width: 120px; left: 320px;
+  transform: rotateY(90deg) translateZ(-60px) translateX(60px);
+}
+.box .ribbon.left {
+  width: 120px; left: -120px;
+  transform: rotateY(-90deg) translateZ(61px) translateX(-60px);
+}
+/* ---- box material: dark wood ---- */
 .box .face {
   position: absolute;
-  background: linear-gradient(160deg, var(--bg-3) 0%, var(--bg-2) 100%);
+  /* base: dark walnut wood tone */
+  background:
+    linear-gradient(175deg,
+      color-mix(in oklab, var(--paper) 6%, transparent) 0%,
+      transparent 40%),
+    linear-gradient(160deg,
+      color-mix(in oklab, var(--bg-3) 80%, var(--bg)) 0%,
+      color-mix(in oklab, var(--bg-3) 90%, var(--bg)) 100%);
   border: 1px solid var(--line);
   display: flex; flex-direction: column; justify-content: space-between;
   padding: 22px;
   color: var(--fg);
+  /* subtle inner shadow for depth */
+  box-shadow: inset 0 0 30px color-mix(in oklab, var(--bg) 25%, transparent);
 }
 .box .face .brand-stamp {
   font-family: var(--f-display); font-style: italic; font-size: 30px;
@@ -578,8 +610,35 @@ a { color: inherit; text-decoration: none; }
   color: var(--fg-3); writing-mode: vertical-rl;
 }
 .box .face .lid-line {
-  position: absolute; left: 0; right: 0; top: 38%; height: 1px;
+  position: absolute; left: 0; right: 0; top: 36%; height: 1px;
   background: var(--line);
+  /* lid separation: shadow below, highlight above */
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--bg) 40%, transparent),
+              0 -1px 0 color-mix(in oklab, var(--paper) 8%, transparent);
+  /* darker in the middle for a groove effect */
+  background: linear-gradient(90deg,
+    var(--line) 0%,
+    var(--line) 15%,
+    transparent 20%, transparent 25%,
+    var(--line) 30%,
+    var(--line) 70%,
+    transparent 75%, transparent 80%,
+    var(--line) 85%, var(--line) 100%);
+}
+/* ---- brand stamp on front face: embossed gold look ---- */
+.box .face .brand-stamp {
+  font-family: var(--f-display); font-style: italic; font-size: 34px;
+  color: var(--paper);
+  /* embossed effect: top highlight, bottom shadow */
+  text-shadow:
+    0 -1px 0 color-mix(in oklab, var(--bg-2) 30%, transparent),
+    0 1px 2px color-mix(in oklab, var(--bg) 40%, transparent);
+}
+.box .face .brand-stamp .small {
+  font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.28em; font-style: normal;
+  color: var(--fg-3); display: block; margin-top: 8px;
+  /* subtle gold accent */
+  color: var(--accent-2);
 }
 .box .face.front { width: 320px; height: 200px; transform: translateZ(60px); }
 .box .face.back { width: 320px; height: 200px; transform: rotateY(180deg) translateZ(60px); }
@@ -590,22 +649,50 @@ a { color: inherit; text-decoration: none; }
 
 .box .face.top .jars { display: flex; gap: 18px; height: 100%; align-items: center; justify-content: center; }
 .box .face.top .jar {
-  width: 60px; height: 80px;
-  background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 30%, var(--bg-3)) 0%, var(--bg-3) 60%);
+  width: 56px; height: 76px;
+  /* cylindrical body: vertical gradient simulating round metal */
+  background:
+    linear-gradient(90deg,
+      color-mix(in oklab, var(--bg) 30%, transparent) 0%,
+      transparent 15%,
+      color-mix(in oklab, var(--paper) 12%, transparent) 35%,
+      transparent 50%,
+      color-mix(in oklab, var(--bg) 30%, transparent) 85%,
+      transparent 100%),
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--accent) 35%, var(--bg-3)) 0%,
+      var(--bg-3) 45%,
+      color-mix(in oklab, var(--bg) 10%, transparent) 100%);
   border: 1px solid var(--line);
-  border-radius: 2px;
+  border-radius: 3px;
   position: relative;
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--paper) 8%, transparent);
+  box-shadow:
+    inset 0 0 8px color-mix(in oklab, var(--bg) 15%, transparent),
+    2px 3px 8px color-mix(in oklab, var(--bg) 40%, transparent);
 }
+/* jar lid */
 .box .face.top .jar::before {
-  content: ""; position: absolute; left: 8px; right: 8px; top: -6px; height: 12px;
-  background: linear-gradient(180deg, var(--accent), var(--accent-2));
-  border-radius: 2px;
+  content: ""; position: absolute; left: 3px; right: 3px; top: -5px; height: 10px;
+  background:
+    linear-gradient(90deg,
+      color-mix(in oklab, var(--bg) 20%, transparent) 0%,
+      transparent 25%,
+      color-mix(in oklab, var(--paper) 10%, transparent) 45%,
+      transparent 75%,
+      color-mix(in oklab, var(--bg) 20%, transparent) 100%),
+    linear-gradient(180deg, var(--accent), var(--accent-2));
+  border-radius: 2px 2px 0 0;
+  border: 1px solid var(--line);
+  border-bottom: none;
+  box-shadow: 0 -1px 0 color-mix(in oklab, var(--paper) 15%, transparent);
 }
+/* jar body label line */
 .box .face.top .jar::after {
   content: attr(data-n);
-  position: absolute; left: 0; right: 0; bottom: 10px;
-  font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.2em; text-align: center; color: var(--paper); opacity: 0.85;
+  position: absolute; left: 0; right: 0; bottom: 12px;
+  font-family: var(--f-display); font-size: 18px; font-style: italic;
+  text-align: center; color: var(--paper); opacity: 0.9;
+  text-shadow: 0 1px 3px color-mix(in oklab, var(--bg) 50%, transparent);
 }
 
 .gift-meta {
@@ -734,8 +821,8 @@ window.I18N = {
       items: [
         { idx: "N°01", cn: "奇萊春茶", en: "Qilai Spring Oolong", price: "NT$ 1,800", weight: "75g", tag: "" },
         { idx: "N°02", cn: "奇萊冬片", en: "Qilai Winter Sprout", price: "NT$ 3,200", weight: "75g", tag: "限量" },
-        { idx: "N°03", cn: "奇萊蜜香烏龍", en: "Qilai Honey Oolong", price: "NT$ 2,200", weight: "75g", tag: "招牌" },
-        { idx: "N°04", cn: "奇萊焙香烏龍", en: "Qilai Roasted Oolong", price: "NT$ 1,600", weight: "75g", tag: "" },
+        { idx: "N°03", cn: "奇萊高冷茶", en: "Qilai Honey Oolong", price: "NT$ 2,200", weight: "75g", tag: "招牌" },
+        { idx: "N°04", cn: "奇萊芽尖紅", en: "Qilai Roasted Oolong", price: "NT$ 1,600", weight: "75g", tag: "" },
       ],
       add: "加入購物袋",
     },
@@ -1820,6 +1907,17 @@ function GiftBox({ t, autoRotate = true }) {
                   <div className="seal">N°01 / 04</div>
                 </div>
                 <div className="lid-line" />
+                {/* wax seal sticker */}
+                <div style={{
+                  position: "absolute", right: "50%", bottom: "-22px",
+                  width: "22px", height: "22px", borderRadius: "50%",
+                  background: "var(--accent)",
+                  border: "1px solid color-mix(in oklab, var(--accent) 60%, var(--bg))",
+                  boxShadow: "0 1px 4px color-mix(in oklab, var(--bg) 40%, transparent), inset 0 1px 0 color-mix(in oklab, var(--paper) 20%, transparent)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontFamily: "var(--f-display)", fontStyle: "italic", fontSize: "10px", color: "var(--bg)",
+                  transform: "translateX(11px)",
+                }}>丰</div>
               </div>
               <div className="face back">
                 <div className="brand-stamp" style={{ fontSize: 22 }}>
@@ -1856,6 +1954,11 @@ function GiftBox({ t, autoRotate = true }) {
                 </div>
                 <div className="seal">SEAL 世豐</div>
               </div>
+              {/* ribbon wrapping around all 4 sides */}
+              <div className="ribbon front" />
+              <div className="ribbon back" />
+              <div className="ribbon right" />
+              <div className="ribbon left" />
             </div>
           </div>
 
