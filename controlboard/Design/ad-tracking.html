@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>廣告追蹤 — Sales Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:oklch(98% 0.004 240);--surface:oklch(100% 0 0);--fg:oklch(15% 0.02 100);
+--muted:oklch(40% 0.02 100);--border:oklch(15% 0.02 100);--accent:oklch(60% 0.22 25);
+--font-display:'Times New Roman','Iowan Old Style',Georgia,serif;
+--font-body:ui-monospace,'IBM Plex Mono','JetBrains Mono',Menlo,monospace}
+html{font-size:16px}
+body{font-family:var(--font-body);color:var(--fg);background:var(--bg);line-height:1.5;min-height:100vh;display:flex}
+.sidebar{width:260px;min-height:100vh;border-right:2px solid var(--border);background:var(--surface);position:sticky;top:0;display:flex;flex-direction:column;flex-shrink:0;transition:transform .25s ease;z-index:100}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:2px solid var(--border)}
+.sidebar-brand h1{font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:-.02em;line-height:1.2}
+.sidebar-brand .tagline{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
+.sidebar-nav a{display:flex;align-items:center;gap:12px;padding:12px 24px;text-decoration:none;color:var(--fg);border-left:2px solid transparent;font-size:14px;transition:border-color .15s,background .15s}
+.sidebar-nav a:hover,.sidebar-nav a.active{border-left-color:var(--accent);background:oklch(60% 0.22 25 / .06)}
+.sidebar-nav a .nav-icon{width:18px;text-align:center;font-size:16px;flex-shrink:0}
+.sidebar-nav a .nav-label{flex:1}
+.sidebar-nav a .nav-badge{font-size:10px;padding:2px 6px;border:1px solid var(--border);font-family:var(--font-body)}
+.sidebar-footer{padding:16px 24px;border-top:2px solid var(--border);font-size:11px;color:var(--muted)}
+.main{flex:1;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:2px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap}
+.topbar-title{font-family:var(--font-display);font-size:28px;font-weight:400;letter-spacing:-.02em}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.menu-toggle{display:none;background:none;border:2px solid var(--border);padding:6px 10px;font-family:var(--font-body);font-size:18px;cursor:pointer;line-height:1}
+.topbar-date{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.user-pill{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border:1px solid var(--border);font-size:13px}
+.user-avatar{width:28px;height:28px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--accent);color:var(--surface)}
+.content{padding:32px}
+.kpi-grid{display:grid;gap:0;margin-bottom:32px;grid-template-columns:repeat(4,1fr)}
+.kpi-card{border:2px solid var(--border);padding:20px 24px;background:var(--surface)}
+.kpi-card+.kpi-card{border-left:none}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.kpi-value{font-family:var(--font-display);font-size:36px;line-height:1.1;letter-spacing:-.02em}
+.kpi-delta{font-size:12px;margin-top:6px}
+.kpi-delta.up{color:oklch(50% 0.16 145)}
+.kpi-delta.down{color:oklch(63% 0.21 15)}
+.section-row{display:grid;gap:0;margin-bottom:32px}
+.section-row.two{grid-template-columns:1fr 1fr}
+.section-card{border:2px solid var(--border);background:var(--surface)}
+.section-card+.section-card{border-left:none}
+.section-header{padding:14px 20px;border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.section-header a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent);font-size:11px}
+.section-header a:hover{text-decoration:underline}
+.section-body{padding:20px}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{text-align:left;padding:10px 14px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:400}
+.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.data-table tr:last-child td{border-bottom:none}
+.data-table .mono{font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:2px 8px;font-size:11px;border:1px solid var(--border)}
+.pill.active{border-color:oklch(50% 0.16 145);color:oklch(50% 0.16 145)}
+.pill.pending{border-color:oklch(63% 0.21 15);color:oklch(63% 0.21 15)}
+.pill.processing{border-color:oklch(58% 0.16 145);color:oklch(58% 0.16 145)}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:140px;padding-top:8px}
+.bar-chart .bar{flex:1;border:1px solid var(--border);background:var(--surface);position:relative;display:flex;flex-direction:column;justify-content:flex-end}
+.bar-chart .bar-fill{width:100%;background:var(--accent);opacity:.7}
+.bar-chart .bar-label{font-size:10px;color:var(--muted);text-align:center;padding-top:4px;text-transform:uppercase}
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.filter-bar select,.filter-bar input[type="date"]{font-family:var(--font-body);font-size:13px;padding:6px 10px;border:1px solid var(--border);background:var(--surface);color:var(--fg)}
+.filter-bar select:focus,.filter-bar input:focus{outline:none;border-color:var(--accent)}
+.filter-bar .filter-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.live-dot{display:inline-block;width:8px;height:8px;border:1px solid var(--fg);border-radius:50%;margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.platform-bar{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.platform-bar .platform-name{width:64px;font-size:12px;white-space:nowrap;text-align:right}
+.platform-bar .platform-track{flex:1;height:24px;border:1px solid var(--border);background:var(--surface);position:relative;display:flex;align-items:center;padding:0 8px}
+.platform-bar .platform-fill{height:100%;background:var(--accent);opacity:.7;display:flex;align-items:center;padding:0 8px;font-size:11px;color:var(--surface);white-space:nowrap}
+.platform-bar .platform-val{font-size:12px;font-variant-numeric:tabular-nums;width:72px;text-align:right}
+@media(max-width:1024px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.section-row.two{grid-template-columns:1fr}.section-card+.section-card{border-left:2px solid var(--border)}}
+@media(max-width:640px){.sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.menu-toggle{display:block}.sidebar-overlay{display:none;position:fixed;inset:0;background:oklch(15% 0.02 100 / .4);z-index:99}.sidebar-overlay.active{display:block}.content{padding:20px 16px}.topbar{padding:12px 16px}.topbar-title{font-size:22px}.kpi-grid{grid-template-columns:1fr}.kpi-card+.kpi-card{border-left:2px solid var(--border)}.kpi-value{font-size:28px}.user-pill span{display:none}}
+</style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><h1>SALES<br>DASHBOARD</h1><p class="tagline">營運控制台 v1.0</p></div>
+  <nav class="sidebar-nav">
+    <a href="index.html"><span class="nav-icon">◼</span><span class="nav-label">總覽</span></a>
+    <a href="marketing-stats.html"><span class="nav-icon">◈</span><span class="nav-label">行銷統計</span><span class="nav-badge">3</span></a>
+    <a href="ad-tracking.html" class="active"><span class="nav-icon">◇</span><span class="nav-label">廣告追蹤</span></a>
+    <a href="analytics.html"><span class="nav-icon">◧</span><span class="nav-label">閱覽分析</span></a>
+    <a href="members.html"><span class="nav-icon">◉</span><span class="nav-label">會員管理</span><span class="nav-badge">12</span></a>
+    <a href="orders.html"><span class="nav-icon">▤</span><span class="nav-label">訂單管理</span><span class="nav-badge">新 5</span></a>
+  </nav>
+  <div class="sidebar-footer">© 2025 Sales Dashboard</div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <h2 class="topbar-title">廣告追蹤</h2>
+    <div class="topbar-actions">
+      <span class="topbar-date">2025.06.17 — 即時 <span class="live-dot"></span></span>
+      <div class="user-pill"><div class="user-avatar">管</div><span>營運團隊</span></div>
+    </div>
+  </header>
+  <div class="content">
+    <div class="filter-bar">
+      <span class="filter-label">期間：</span>
+      <input type="date" value="2025-05-17">
+      <span class="filter-label">~</span>
+      <input type="date" value="2025-06-17">
+      <span class="filter-label" style="margin-left:12px">平台：</span>
+      <select><option>所有平台</option><option selected>Google Ads</option><option>Facebook</option><option>Line Ads</option><option>Instagram</option><option>TikTok</option></select>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><span class="kpi-label">總曝光</span><div class="kpi-value">1.84M</div><div class="kpi-delta up">▲ +22.3%</div></div>
+      <div class="kpi-card"><span class="kpi-label">總點擊</span><div class="kpi-value">62,480</div><div class="kpi-delta up">▲ +14.1%</div></div>
+      <div class="kpi-card"><span class="kpi-label">平均 CTR</span><div class="kpi-value">3.40%</div><div class="kpi-delta up">▲ +0.5%</div></div>
+      <div class="kpi-card"><span class="kpi-label">平均 CPC</span><div class="kpi-value">NT$ 8.6</div><div class="kpi-delta down">▼ -12%</div></div>
+    </div>
+    <div class="section-row two">
+      <div class="section-card">
+        <div class="section-header"><span>平台曝光分佈</span></div>
+        <div class="section-body">
+          <div class="platform-bar"><span class="platform-name">Google</span><div class="platform-track"><div class="platform-fill" style="width:42%">42% — 773K</div></div><span class="platform-val">NT$ 6,647</span></div>
+          <div class="platform-bar"><span class="platform-name">Facebook</span><div class="platform-track"><div class="platform-fill" style="width:28%">28% — 515K</div></div><span class="platform-val">NT$ 4,433</span></div>
+          <div class="platform-bar"><span class="platform-name">Instagram</span><div class="platform-track"><div class="platform-fill" style="width:15%">15% — 276K</div></div><span class="platform-val">NT$ 2,385</span></div>
+          <div class="platform-bar"><span class="platform-name">Line</span><div class="platform-track"><div class="platform-fill" style="width:10%">10% — 184K</div></div><span class="platform-val">NT$ 2,192</span></div>
+          <div class="platform-bar"><span class="platform-name">TikTok</span><div class="platform-track"><div class="platform-fill" style="width:5%">5% — 92K</div></div><span class="platform-val">NT$ 1,218</span></div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><span>每日點擊趨勢</span></div>
+        <div class="section-body">
+          <div class="bar-chart">
+            <div class="bar"><div class="bar-fill" style="height:55%"></div><div class="bar-label">17日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:68%"></div><div class="bar-label">18日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:62%"></div><div class="bar-label">19日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:75%"></div><div class="bar-label">20日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:70%"></div><div class="bar-label">21日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:80%"></div><div class="bar-label">22日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:85%"></div><div class="bar-label">23日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:72%"></div><div class="bar-label">24日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:78%"></div><div class="bar-label">25日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:90%"></div><div class="bar-label">26日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:95%"></div><div class="bar-label">27日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:88%"></div><div class="bar-label">28日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:92%"></div><div class="bar-label">29日</div></div>
+            <div class="bar"><div class="bar-fill" style="height:100%"></div><div class="bar-label">今日</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><span>廣告活動列表</span><a href="#">查看全部 →</a></div>
+      <div class="section-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>活動名稱</th><th>平台</th><th>狀態</th><th>預算</th><th>已花費</th><th>曝光</th><th>點擊</th><th>CTR</th><th>CPC</th><th>轉換</th><th>ROAS</th></tr></thead>
+          <tbody>
+            <tr><td>夏日大促 — 搜尋廣告</td><td>Google</td><td><span class="pill active">進行中</span></td><td class="mono">NT$ 80,000</td><td class="mono">NT$ 52,400</td><td class="mono">384K</td><td class="mono">13,200</td><td class="mono">3.44%</td><td class="mono">NT$ 3.97</td><td class="mono">42</td><td class="mono">5.8×</td></tr>
+            <tr><td>夏日大促 — 展示廣告</td><td>Facebook</td><td><span class="pill active">進行中</span></td><td class="mono">NT$ 50,000</td><td class="mono">NT$ 31,200</td><td class="mono">256K</td><td class="mono">9,800</td><td class="mono">3.83%</td><td class="mono">NT$ 3.18</td><td class="mono">28</td><td class="mono">4.2×</td></tr>
+            <tr><td>會員回饋 — IG Reels</td><td>Instagram</td><td><span class="pill active">進行中</span></td><td class="mono">NT$ 30,000</td><td class="mono">NT$ 18,500</td><td class="mono">128K</td><td class="mono">5,200</td><td class="mono">4.06%</td><td class="mono">NT$ 3.56</td><td class="mono">15</td><td class="mono">3.9×</td></tr>
+            <tr><td>Line Ads — 季節促銷</td><td>Line</td><td><span class="pill processing">審核中</span></td><td class="mono">NT$ 20,000</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td></tr>
+            <tr><td>TikTok — 品牌 awareness</td><td>TikTok</td><td><span class="pill pending">排程中</span></td><td class="mono">NT$ 15,000</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){var s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay'),t=document.getElementById('menuToggle');t.addEventListener('click',function(){s.classList.toggle('open');o.classList.toggle('active')});o.addEventListener('click',function(){s.classList.remove('open');o.classList.remove('active')})})();
+</script>
+</body>
+</html>

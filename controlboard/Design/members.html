@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>會員管理 — Sales Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:oklch(98% 0.004 240);--surface:oklch(100% 0 0);--fg:oklch(15% 0.02 100);
+--muted:oklch(40% 0.02 100);--border:oklch(15% 0.02 100);--accent:oklch(60% 0.22 25);
+--font-display:'Times New Roman','Iowan Old Style',Georgia,serif;
+--font-body:ui-monospace,'IBM Plex Mono','JetBrains Mono',Menlo,monospace}
+html{font-size:16px}
+body{font-family:var(--font-body);color:var(--fg);background:var(--bg);line-height:1.5;min-height:100vh;display:flex}
+.sidebar{width:260px;min-height:100vh;border-right:2px solid var(--border);background:var(--surface);position:sticky;top:0;display:flex;flex-direction:column;flex-shrink:0;transition:transform .25s ease;z-index:100}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:2px solid var(--border)}
+.sidebar-brand h1{font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:-.02em;line-height:1.2}
+.sidebar-brand .tagline{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
+.sidebar-nav a{display:flex;align-items:center;gap:12px;padding:12px 24px;text-decoration:none;color:var(--fg);border-left:2px solid transparent;font-size:14px;transition:border-color .15s,background .15s}
+.sidebar-nav a:hover,.sidebar-nav a.active{border-left-color:var(--accent);background:oklch(60% 0.22 25 / .06)}
+.sidebar-nav a .nav-icon{width:18px;text-align:center;font-size:16px;flex-shrink:0}
+.sidebar-nav a .nav-label{flex:1}
+.sidebar-nav a .nav-badge{font-size:10px;padding:2px 6px;border:1px solid var(--border);font-family:var(--font-body)}
+.sidebar-footer{padding:16px 24px;border-top:2px solid var(--border);font-size:11px;color:var(--muted)}
+.main{flex:1;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:2px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap}
+.topbar-title{font-family:var(--font-display);font-size:28px;font-weight:400;letter-spacing:-.02em}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.menu-toggle{display:none;background:none;border:2px solid var(--border);padding:6px 10px;font-family:var(--font-body);font-size:18px;cursor:pointer;line-height:1}
+.topbar-date{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.user-pill{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border:1px solid var(--border);font-size:13px}
+.user-avatar{width:28px;height:28px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--accent);color:var(--surface)}
+.content{padding:32px}
+.kpi-grid{display:grid;gap:0;margin-bottom:32px;grid-template-columns:repeat(4,1fr)}
+.kpi-card{border:2px solid var(--border);padding:20px 24px;background:var(--surface)}
+.kpi-card+.kpi-card{border-left:none}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.kpi-value{font-family:var(--font-display);font-size:36px;line-height:1.1;letter-spacing:-.02em}
+.kpi-delta{font-size:12px;margin-top:6px}
+.kpi-delta.up{color:oklch(50% 0.16 145)}
+.kpi-delta.down{color:oklch(63% 0.21 15)}
+.section-row{display:grid;gap:0;margin-bottom:32px}
+.section-row.two{grid-template-columns:1fr 1fr}
+.section-card{border:2px solid var(--border);background:var(--surface)}
+.section-card+.section-card{border-left:none}
+.section-header{padding:14px 20px;border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.section-header a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent);font-size:11px}
+.section-header a:hover{text-decoration:underline}
+.section-body{padding:20px}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{text-align:left;padding:10px 14px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:400}
+.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.data-table tr:last-child td{border-bottom:none}
+.data-table .mono{font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:2px 8px;font-size:11px;border:1px solid var(--border)}
+.pill.active{border-color:oklch(50% 0.16 145);color:oklch(50% 0.16 145)}
+.pill.pending{border-color:oklch(63% 0.21 15);color:oklch(63% 0.21 15)}
+.pill.cancelled{border-color:oklch(63% 0.21 15);color:oklch(63% 0.21 15);opacity:.6}
+.pill.vip{border-color:oklch(60% 0.22 25);color:oklch(60% 0.22 25)}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:140px;padding-top:8px}
+.bar-chart .bar{flex:1;border:1px solid var(--border);background:var(--surface);position:relative;display:flex;flex-direction:column;justify-content:flex-end}
+.bar-chart .bar-fill{width:100%;background:var(--accent);opacity:.7}
+.bar-chart .bar-label{font-size:10px;color:var(--muted);text-align:center;padding-top:4px;text-transform:uppercase}
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.filter-bar select,.filter-bar input[type="date"],.filter-bar input[type="text"]{font-family:var(--font-body);font-size:13px;padding:6px 10px;border:1px solid var(--border);background:var(--surface);color:var(--fg)}
+.filter-bar select:focus,.filter-bar input:focus{outline:none;border-color:var(--accent)}
+.filter-bar .filter-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.search-input{flex:1;min-width:200px}
+.member-avatar{width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--bg);color:var(--fg);flex-shrink:0}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-top:1px solid var(--border);font-size:13px}
+.page-btns{display:flex;gap:4px}
+.page-btns button{font-family:var(--font-body);padding:4px 10px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px}
+.page-btns button.active{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.page-btns button:hover:not(.active){background:oklch(60% 0.22 25 / .06)}
+@media(max-width:1024px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.section-row.two{grid-template-columns:1fr}.section-card+.section-card{border-left:2px solid var(--border)}}
+@media(max-width:640px){.sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.menu-toggle{display:block}.sidebar-overlay{display:none;position:fixed;inset:0;background:oklch(15% 0.02 100 / .4);z-index:99}.sidebar-overlay.active{display:block}.content{padding:20px 16px}.topbar{padding:12px 16px}.topbar-title{font-size:22px}.kpi-grid{grid-template-columns:1fr}.kpi-card+.kpi-card{border-left:2px solid var(--border)}.kpi-value{font-size:28px}.user-pill span{display:none}.filter-bar{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><h1>SALES<br>DASHBOARD</h1><p class="tagline">營運控制台 v1.0</p></div>
+  <nav class="sidebar-nav">
+    <a href="index.html"><span class="nav-icon">◼</span><span class="nav-label">總覽</span></a>
+    <a href="marketing-stats.html"><span class="nav-icon">◈</span><span class="nav-label">行銷統計</span><span class="nav-badge">3</span></a>
+    <a href="ad-tracking.html"><span class="nav-icon">◇</span><span class="nav-label">廣告追蹤</span></a>
+    <a href="analytics.html"><span class="nav-icon">◧</span><span class="nav-label">閱覽分析</span></a>
+    <a href="members.html" class="active"><span class="nav-icon">◉</span><span class="nav-label">會員管理</span><span class="nav-badge">12</span></a>
+    <a href="orders.html"><span class="nav-icon">▤</span><span class="nav-label">訂單管理</span><span class="nav-badge">新 5</span></a>
+  </nav>
+  <div class="sidebar-footer">© 2025 Sales Dashboard</div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <h2 class="topbar-title">會員管理</h2>
+    <div class="topbar-actions">
+      <span class="topbar-date">2025.06.17 — 週三</span>
+      <div class="user-pill"><div class="user-avatar">管</div><span>營運團隊</span></div>
+    </div>
+  </header>
+  <div class="content">
+    <div class="filter-bar">
+      <span class="filter-label">搜尋：</span>
+      <input type="text" class="search-input" placeholder="會員名稱、Email、ID…">
+      <span class="filter-label">等級：</span>
+      <select><option>所有等級</option><option selected>VIP</option><option>Gold</option><option>Silver</option><option>Basic</option></select>
+      <span class="filter-label">狀態：</span>
+      <select><option>所有狀態</option><option selected>正常</option><option>停權</option><option>已註銷</option></select>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><span class="kpi-label">總會員數</span><div class="kpi-value">28,470</div><div class="kpi-delta up">▲ +562 本月新增</div></div>
+      <div class="kpi-card"><span class="kpi-label">活躍會員</span><div class="kpi-value">14,230</div><div class="kpi-delta up">▲ 50% 活躍率</div></div>
+      <div class="kpi-card"><span class="kpi-label">VIP 會員</span><div class="kpi-value">1,840</div><div class="kpi-delta up">▲ +128 本月升級</div></div>
+      <div class="kpi-card"><span class="kpi-label">平均消費</span><div class="kpi-value">NT$ 3,840</div><div class="kpi-delta up">▲ +8.2%</div></div>
+    </div>
+    <div class="section-card">
+      <div class="section-header">
+        <span>會員列表</span>
+        <a href="#">匯出 CSV →</a>
+      </div>
+      <div class="section-body" style="padding:0;overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr><th>會員ID</th><th>名稱</th><th>等級</th><th>註冊日期</th><th>總消費</th><th>訂單數</th><th>最後活動</th><th>狀態</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">#10234</td><td>王小明</td><td><span class="pill vip">VIP</span></td>
+              <td class="mono">2024-03-15</td><td class="mono">NT$ 28,400</td><td class="mono">12</td>
+              <td>06/17</td><td><span class="pill active">正常</span></td>
+            </tr>
+            <tr>
+              <td class="mono">#10235</td><td>陳美玲</td><td><span class="pill vip">VIP</span></td>
+              <td class="mono">2024-01-22</td><td class="mono">NT$ 15,600</td><td class="mono">8</td>
+              <td>06/16</td><td><span class="pill active">正常</span></td>
+            </tr>
+            <tr>
+              <td class="mono">#10233</td><td>林志豪</td><td><span class="pill active">Gold</span></td>
+              <td class="mono">2024-06-08</td><td class="mono">NT$ 8,200</td><td class="mono">5</td>
+              <td>06/15</td><td><span class="pill active">正常</span></td>
+            </tr>
+            <tr>
+              <td class="mono">#10232</td><td>張雅琪</td><td><span class="pill active">Gold</span></td>
+              <td class="mono">2024-09-12</td><td class="mono">NT$ 6,400</td><td class="mono">4</td>
+              <td>06/14</td><td><span class="pill active">正常</span></td>
+            </tr>
+            <tr>
+              <td class="mono">#10231</td><td>李建国</td><td><span class="pill">Silver</span></td>
+              <td class="mono">2025-01-05</td><td class="mono">NT$ 3,100</td><td class="mono">3</td>
+              <td>06/10</td><td><span class="pill active">正常</span></td>
+            </tr>
+            <tr>
+              <td class="mono">#10230</td><td>趙小芬</td><td><span class="pill">Silver</span></td>
+              <td class="mono">2025-02-18</td><td class="mono">NT$ 2,800</td><td class="mono">2</td>
+              <td>06/08</td><td><span class="pill pending">停權</span></td>
+            </tr>
+            <tr>
+              <td class="mono">#10229</td><td>黃偉翔</td><td><span class="pill">Basic</span></td>
+              <td class="mono">2025-05-01</td><td class="mono">NT$ 890</td><td class="mono">1</td>
+              <td>06/05</td><td><span class="pill active">正常</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span>顯示 1-7 / 共 28,470 筆</span>
+        <div class="page-btns">
+          <button>‹</button>
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>…</button>
+          <button>4,067</button>
+          <button>›</button>
+        </div>
+      </div>
+    </div>
+    <div class="section-row two">
+      <div class="section-card">
+        <div class="section-header"><span>等級分佈</span></div>
+        <div class="section-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>等級</th><th>人數</th><th>佔比</th><th>平均消費</th></tr></thead>
+            <tbody>
+              <tr><td><span class="pill vip">VIP</span></td><td class="mono">1,840</td><td class="mono">6.5%</td><td class="mono">NT$ 18,400</td></tr>
+              <tr><td><span class="pill active">Gold</span></td><td class="mono">4,620</td><td class="mono">16.2%</td><td class="mono">NT$ 8,200</td></tr>
+              <tr><td><span class="pill">Silver</span></td><td class="mono">8,430</td><td class="mono">29.6%</td><td class="mono">NT$ 3,800</td></tr>
+              <tr><td><span class="pill pending">Basic</span></td><td class="mono">13,580</td><td class="mono">47.7%</td><td class="mono">NT$ 1,200</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><span>本月註冊趨勢</span></div>
+        <div class="section-body">
+          <div class="bar-chart">
+            <div class="bar"><div class="bar-fill" style="height:35%"></div><div class="bar-label">5/17</div></div>
+            <div class="bar"><div class="bar-fill" style="height:42%"></div><div class="bar-label">5/20</div></div>
+            <div class="bar"><div class="bar-fill" style="height:55%"></div><div class="bar-label">5/23</div></div>
+            <div class="bar"><div class="bar-fill" style="height:48%"></div><div class="bar-label">5/26</div></div>
+            <div class="bar"><div class="bar-fill" style="height:62%"></div><div class="bar-label">5/29</div></div>
+            <div class="bar"><div class="bar-fill" style="height:70%"></div><div class="bar-label">6/1</div></div>
+            <div class="bar"><div class="bar-fill" style="height:65%"></div><div class="bar-label">6/4</div></div>
+            <div class="bar"><div class="bar-fill" style="height:78%"></div><div class="bar-label">6/7</div></div>
+            <div class="bar"><div class="bar-fill" style="height:85%"></div><div class="bar-label">6/10</div></div>
+            <div class="bar"><div class="bar-fill" style="height:92%"></div><div class="bar-label">6/13</div></div>
+            <div class="bar"><div class="bar-fill" style="height:100%"></div><div class="bar-label">6/16</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){var s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay'),t=document.getElementById('menuToggle');t.addEventListener('click',function(){s.classList.toggle('open');o.classList.toggle('active')});o.addEventListener('click',function(){s.classList.remove('open');o.classList.remove('active')})})();
+</script>
+</body>
+</html>

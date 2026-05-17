@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>閱覽分析 — Sales Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:oklch(98% 0.004 240);--surface:oklch(100% 0 0);--fg:oklch(15% 0.02 100);
+--muted:oklch(40% 0.02 100);--border:oklch(15% 0.02 100);--accent:oklch(60% 0.22 25);
+--font-display:'Times New Roman','Iowan Old Style',Georgia,serif;
+--font-body:ui-monospace,'IBM Plex Mono','JetBrains Mono',Menlo,monospace}
+html{font-size:16px}
+body{font-family:var(--font-body);color:var(--fg);background:var(--bg);line-height:1.5;min-height:100vh;display:flex}
+.sidebar{width:260px;min-height:100vh;border-right:2px solid var(--border);background:var(--surface);position:sticky;top:0;display:flex;flex-direction:column;flex-shrink:0;transition:transform .25s ease;z-index:100}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:2px solid var(--border)}
+.sidebar-brand h1{font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:-.02em;line-height:1.2}
+.sidebar-brand .tagline{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
+.sidebar-nav a{display:flex;align-items:center;gap:12px;padding:12px 24px;text-decoration:none;color:var(--fg);border-left:2px solid transparent;font-size:14px;transition:border-color .15s,background .15s}
+.sidebar-nav a:hover,.sidebar-nav a.active{border-left-color:var(--accent);background:oklch(60% 0.22 25 / .06)}
+.sidebar-nav a .nav-icon{width:18px;text-align:center;font-size:16px;flex-shrink:0}
+.sidebar-nav a .nav-label{flex:1}
+.sidebar-nav a .nav-badge{font-size:10px;padding:2px 6px;border:1px solid var(--border);font-family:var(--font-body)}
+.sidebar-footer{padding:16px 24px;border-top:2px solid var(--border);font-size:11px;color:var(--muted)}
+.main{flex:1;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:2px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap}
+.topbar-title{font-family:var(--font-display);font-size:28px;font-weight:400;letter-spacing:-.02em}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.menu-toggle{display:none;background:none;border:2px solid var(--border);padding:6px 10px;font-family:var(--font-body);font-size:18px;cursor:pointer;line-height:1}
+.topbar-date{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.user-pill{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border:1px solid var(--border);font-size:13px}
+.user-avatar{width:28px;height:28px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--accent);color:var(--surface)}
+.content{padding:32px}
+.kpi-grid{display:grid;gap:0;margin-bottom:32px;grid-template-columns:repeat(4,1fr)}
+.kpi-card{border:2px solid var(--border);padding:20px 24px;background:var(--surface)}
+.kpi-card+.kpi-card{border-left:none}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.kpi-value{font-family:var(--font-display);font-size:36px;line-height:1.1;letter-spacing:-.02em}
+.kpi-delta{font-size:12px;margin-top:6px}
+.kpi-delta.up{color:oklch(50% 0.16 145)}
+.kpi-delta.down{color:oklch(63% 0.21 15)}
+.section-row{display:grid;gap:0;margin-bottom:32px}
+.section-row.two{grid-template-columns:1fr 1fr}
+.section-row.three{grid-template-columns:1fr 1fr 1fr}
+.section-card{border:2px solid var(--border);background:var(--surface)}
+.section-card+.section-card{border-left:none}
+.section-header{padding:14px 20px;border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.section-header a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent);font-size:11px}
+.section-header a:hover{text-decoration:underline}
+.section-body{padding:20px}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{text-align:left;padding:10px 14px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:400}
+.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.data-table tr:last-child td{border-bottom:none}
+.data-table .mono{font-variant-numeric:tabular-nums}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:140px;padding-top:8px}
+.bar-chart .bar{flex:1;border:1px solid var(--border);background:var(--surface);position:relative;display:flex;flex-direction:column;justify-content:flex-end}
+.bar-chart .bar-fill{width:100%;background:var(--accent);opacity:.7}
+.bar-chart .bar-label{font-size:10px;color:var(--muted);text-align:center;padding-top:4px;text-transform:uppercase}
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.filter-bar select,.filter-bar input[type="date"]{font-family:var(--font-body);font-size:13px;padding:6px 10px;border:1px solid var(--border);background:var(--surface);color:var(--fg)}
+.filter-bar select:focus,.filter-bar input:focus{outline:none;border-color:var(--accent)}
+.filter-bar .filter-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.heatmap{display:grid;grid-template-columns:repeat(24,1fr);gap:2px}
+.heatmap-cell{aspect-ratio:1;border:1px solid var(--border);position:relative;cursor:pointer}
+.heatmap-cell:hover::after{content:attr(data-tip);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--surface);padding:2px 6px;font-size:10px;white-space:nowrap;z-index:10}
+.heat-0{background:var(--surface)}
+.heat-1{background:oklch(90% 0.02 25)}
+.heat-2{background:oklch(80% 0.04 25)}
+.heat-3{background:oklch(70% 0.06 25)}
+.heat-4{background:oklch(60% 0.08 25)}
+.heat-5{background:oklch(55% 0.12 25)}
+.legend{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:11px;color:var(--muted)}
+.legend-bar{display:flex;gap:2px}
+.legend-cell{width:16px;height:16px;border:1px solid var(--border)}
+@media(max-width:1024px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.section-row.two,.section-row.three{grid-template-columns:1fr}.section-card+.section-card{border-left:2px solid var(--border)}}
+@media(max-width:640px){.sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.menu-toggle{display:block}.sidebar-overlay{display:none;position:fixed;inset:0;background:oklch(15% 0.02 100 / .4);z-index:99}.sidebar-overlay.active{display:block}.content{padding:20px 16px}.topbar{padding:12px 16px}.topbar-title{font-size:22px}.kpi-grid{grid-template-columns:1fr}.kpi-card+.kpi-card{border-left:2px solid var(--border)}.kpi-value{font-size:28px}.user-pill span{display:none}}
+</style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><h1>SALES<br>DASHBOARD</h1><p class="tagline">營運控制台 v1.0</p></div>
+  <nav class="sidebar-nav">
+    <a href="index.html"><span class="nav-icon">◼</span><span class="nav-label">總覽</span></a>
+    <a href="marketing-stats.html"><span class="nav-icon">◈</span><span class="nav-label">行銷統計</span><span class="nav-badge">3</span></a>
+    <a href="ad-tracking.html"><span class="nav-icon">◇</span><span class="nav-label">廣告追蹤</span></a>
+    <a href="analytics.html" class="active"><span class="nav-icon">◧</span><span class="nav-label">閱覽分析</span></a>
+    <a href="members.html"><span class="nav-icon">◉</span><span class="nav-label">會員管理</span><span class="nav-badge">12</span></a>
+    <a href="orders.html"><span class="nav-icon">▤</span><span class="nav-label">訂單管理</span><span class="nav-badge">新 5</span></a>
+  </nav>
+  <div class="sidebar-footer">© 2025 Sales Dashboard</div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <h2 class="topbar-title">閱覽分析</h2>
+    <div class="topbar-actions">
+      <span class="topbar-date">2025.06.17 — 週三</span>
+      <div class="user-pill"><div class="user-avatar">管</div><span>營運團隊</span></div>
+    </div>
+  </header>
+  <div class="content">
+    <div class="filter-bar">
+      <span class="filter-label">期間：</span>
+      <input type="date" value="2025-05-17">
+      <span class="filter-label">~</span>
+      <input type="date" value="2025-06-17">
+      <span class="filter-label" style="margin-left:12px">頁面：</span>
+      <select><option>所有頁面</option><option selected>首頁</option><option>產品頁面</option><option>部落格</option></select>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><span class="kpi-label">總頁面瀏覽</span><div class="kpi-value">128.4K</div><div class="kpi-delta up">▲ +15.2%</div></div>
+      <div class="kpi-card"><span class="kpi-label">獨立訪客</span><div class="kpi-value">43,720</div><div class="kpi-delta up">▲ +8.4%</div></div>
+      <div class="kpi-card"><span class="kpi-label">平均停留</span><div class="kpi-value">4:32</div><div class="kpi-delta up">▲ +18s</div></div>
+      <div class="kpi-card"><span class="kpi-label">跳出率</span><div class="kpi-value">34.2%</div><div class="kpi-delta up">▼ -2.1%</div></div>
+    </div>
+    <div class="section-row two">
+      <div class="section-card">
+        <div class="section-header"><span>流量趨勢（每日）</span><a href="#">查看原始資料 →</a></div>
+        <div class="section-body">
+          <div class="bar-chart">
+            <div class="bar"><div class="bar-fill" style="height:45%"></div><div class="bar-label">一</div></div>
+            <div class="bar"><div class="bar-fill" style="height:62%"></div><div class="bar-label">二</div></div>
+            <div class="bar"><div class="bar-fill" style="height:78%"></div><div class="bar-label">三</div></div>
+            <div class="bar"><div class="bar-fill" style="height:90%"></div><div class="bar-label">四</div></div>
+            <div class="bar"><div class="bar-fill" style="height:95%"></div><div class="bar-label">五</div></div>
+            <div class="bar"><div class="bar-fill" style="height:55%"></div><div class="bar-label">六</div></div>
+            <div class="bar"><div class="bar-fill" style="height:38%"></div><div class="bar-label">日</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><span>流量來源分佈</span></div>
+        <div class="section-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>來源</th><th>訪客</th><th>佔比</th><th>瀏覽</th><th>跳出率</th></tr></thead>
+            <tbody>
+              <tr><td>Google 搜尋</td><td class="mono">18,432</td><td class="mono">42.1%</td><td class="mono">42,890</td><td class="mono">28.5%</td></tr>
+              <tr><td>直接輸入</td><td class="mono">8,210</td><td class="mono">18.8%</td><td class="mono">21,450</td><td class="mono">22.1%</td></tr>
+              <tr><td>社群媒體</td><td class="mono">6,540</td><td class="mono">14.9%</td><td class="mono">12,380</td><td class="mono">48.2%</td></tr>
+              <tr><td>電子報</td><td class="mono">4,890</td><td class="mono">11.2%</td><td class="mono">15,200</td><td class="mono">31.4%</td></tr>
+              <tr><td>Referrals</td><td class="mono">3,120</td><td class="mono">7.1%</td><td class="mono">7,420</td><td class="mono">35.8%</td></tr>
+              <tr><td>其他</td><td class="mono">2,528</td><td class="mono">5.8%</td><td class="mono">5,800</td><td class="mono">42.6%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="section-row two">
+      <div class="section-card">
+        <div class="section-header"><span>熱門頁面 TOP 8</span></div>
+        <div class="section-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>頁面</th><th>瀏覽</th><th>訪客</th><th>平均停留</th><th>跳出率</th></tr></thead>
+            <tbody>
+              <tr><td>/ 首頁</td><td class="mono">28,430</td><td class="mono">12,100</td><td class="mono">3:45</td><td class="mono">32.1%</td></tr>
+              <tr><td>/products — 夏季促銷</td><td class="mono">18,200</td><td class="mono">8,400</td><td class="mono">5:12</td><td class="mono">25.8%</td></tr>
+              <tr><td>/products — 新品上市</td><td class="mono">14,500</td><td class="mono">6,800</td><td class="mono">4:38</td><td class="mono">30.2%</td></tr>
+              <tr><td>/blog — 穿搭指南</td><td class="mono">9,800</td><td class="mono">5,200</td><td class="mono">6:22</td><td class="mono">18.5%</td></tr>
+              <tr><td>/about — 關於我們</td><td class="mono">7,200</td><td class="mono">4,100</td><td class="mono">2:58</td><td class="mono">38.4%</td></tr>
+              <tr><td>/faq — 常見問題</td><td class="mono">6,400</td><td class="mono">3,800</td><td class="mono">4:05</td><td class="mono">22.6%</td></tr>
+              <tr><td>/contact — 聯絡我們</td><td class="mono">4,200</td><td class="mono">2,900</td><td class="mono">2:15</td><td class="mono">45.2%</td></tr>
+              <tr><td>/checkout — 結帳頁</td><td class="mono">3,100</td><td class="mono">2,400</td><td class="mono">3:28</td><td class="mono">52.8%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><span>設備分佈</span></div>
+        <div class="section-body">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+              <span>Desktop</span>
+              <div style="flex:1;margin:0 20px;height:24px;border:1px solid var(--border);background:var(--surface);position:relative">
+                <div style="position:absolute;left:0;top:0;bottom:0;width:52%;background:var(--accent);opacity:.7"></div>
+              </div>
+              <span class="mono" style="width:48px;text-align:right">52.3%</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+              <span>Mobile</span>
+              <div style="flex:1;margin:0 20px;height:24px;border:1px solid var(--border);background:var(--surface);position:relative">
+                <div style="position:absolute;left:0;top:0;bottom:0;width:38%;background:var(--accent);opacity:.7"></div>
+              </div>
+              <span class="mono" style="width:48px;text-align:right">38.1%</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0">
+              <span>Tablet</span>
+              <div style="flex:1;margin:0 20px;height:24px;border:1px solid var(--border);background:var(--surface);position:relative">
+                <div style="position:absolute;left:0;top:0;bottom:0;width:10%;background:var(--accent);opacity:.7"></div>
+              </div>
+              <span class="mono" style="width:48px;text-align:right">9.6%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){var s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay'),t=document.getElementById('menuToggle');t.addEventListener('click',function(){s.classList.toggle('open');o.classList.toggle('active')});o.addEventListener('click',function(){s.classList.remove('open');o.classList.remove('active')})})();
+</script>
+</body>
+</html>

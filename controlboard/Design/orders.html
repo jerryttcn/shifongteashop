@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>訂單管理 — Sales Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:oklch(98% 0.004 240);--surface:oklch(100% 0 0);--fg:oklch(15% 0.02 100);
+--muted:oklch(40% 0.02 100);--border:oklch(15% 0.02 100);--accent:oklch(60% 0.22 25);
+--font-display:'Times New Roman','Iowan Old Style',Georgia,serif;
+--font-body:ui-monospace,'IBM Plex Mono','JetBrains Mono',Menlo,monospace}
+html{font-size:16px}
+body{font-family:var(--font-body);color:var(--fg);background:var(--bg);line-height:1.5;min-height:100vh;display:flex}
+.sidebar{width:260px;min-height:100vh;border-right:2px solid var(--border);background:var(--surface);position:sticky;top:0;display:flex;flex-direction:column;flex-shrink:0;transition:transform .25s ease;z-index:100}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:2px solid var(--border)}
+.sidebar-brand h1{font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:-.02em;line-height:1.2}
+.sidebar-brand .tagline{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
+.sidebar-nav a{display:flex;align-items:center;gap:12px;padding:12px 24px;text-decoration:none;color:var(--fg);border-left:2px solid transparent;font-size:14px;transition:border-color .15s,background .15s}
+.sidebar-nav a:hover,.sidebar-nav a.active{border-left-color:var(--accent);background:oklch(60% 0.22 25 / .06)}
+.sidebar-nav a .nav-icon{width:18px;text-align:center;font-size:16px;flex-shrink:0}
+.sidebar-nav a .nav-label{flex:1}
+.sidebar-nav a .nav-badge{font-size:10px;padding:2px 6px;border:1px solid var(--border);font-family:var(--font-body)}
+.sidebar-footer{padding:16px 24px;border-top:2px solid var(--border);font-size:11px;color:var(--muted)}
+.main{flex:1;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:2px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap}
+.topbar-title{font-family:var(--font-display);font-size:28px;font-weight:400;letter-spacing:-.02em}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.menu-toggle{display:none;background:none;border:2px solid var(--border);padding:6px 10px;font-family:var(--font-body);font-size:18px;cursor:pointer;line-height:1}
+.topbar-date{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.user-pill{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border:1px solid var(--border);font-size:13px}
+.user-avatar{width:28px;height:28px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--accent);color:var(--surface)}
+.content{padding:32px}
+.kpi-grid{display:grid;gap:0;margin-bottom:32px;grid-template-columns:repeat(4,1fr)}
+.kpi-card{border:2px solid var(--border);padding:20px 24px;background:var(--surface)}
+.kpi-card+.kpi-card{border-left:none}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.kpi-value{font-family:var(--font-display);font-size:36px;line-height:1.1;letter-spacing:-.02em}
+.kpi-delta{font-size:12px;margin-top:6px}
+.kpi-delta.up{color:oklch(50% 0.16 145)}
+.kpi-delta.down{color:oklch(63% 0.21 15)}
+.section-row{display:grid;gap:0;margin-bottom:32px}
+.section-row.two{grid-template-columns:1fr 1fr}
+.section-card{border:2px solid var(--border);background:var(--surface)}
+.section-card+.section-card{border-left:none}
+.section-header{padding:14px 20px;border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.section-header a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent);font-size:11px}
+.section-header a:hover{text-decoration:underline}
+.section-body{padding:20px}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{text-align:left;padding:10px 14px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:400}
+.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.data-table tr:last-child td{border-bottom:none}
+.data-table .mono{font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:2px 8px;font-size:11px;border:1px solid var(--border)}
+.pill.active{border-color:oklch(50% 0.16 145);color:oklch(50% 0.16 145)}
+.pill.pending{border-color:oklch(63% 0.21 15);color:oklch(63% 0.21 15)}
+.pill.cancelled{border-color:oklch(63% 0.21 15);color:oklch(63% 0.21 15);opacity:.6}
+.pill.processing{border-color:oklch(58% 0.16 145);color:oklch(58% 0.16 145)}
+.pill.refunded{border-color:oklch(63% 0.21 15);color:oklch(63% 0.21 15);text-decoration:line-through}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:140px;padding-top:8px}
+.bar-chart .bar{flex:1;border:1px solid var(--border);background:var(--surface);position:relative;display:flex;flex-direction:column;justify-content:flex-end}
+.bar-chart .bar-fill{width:100%;background:var(--accent);opacity:.7}
+.bar-chart .bar-label{font-size:10px;color:var(--muted);text-align:center;padding-top:4px;text-transform:uppercase}
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.filter-bar select,.filter-bar input[type="date"],.filter-bar input[type="text"]{font-family:var(--font-body);font-size:13px;padding:6px 10px;border:1px solid var(--border);background:var(--surface);color:var(--fg)}
+.filter-bar select:focus,.filter-bar input:focus{outline:none;border-color:var(--accent)}
+.filter-bar .filter-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.search-input{flex:1;min-width:200px}
+.order-type{font-size:11px;padding:2px 6px;border:1px solid var(--border)}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-top:1px solid var(--border);font-size:13px}
+.page-btns{display:flex;gap:4px}
+.page-btns button{font-family:var(--font-body);padding:4px 10px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px}
+.page-btns button.active{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.page-btns button:hover:not(.active){background:oklch(60% 0.22 25 / .06)}
+.status-flow{display:flex;align-items:center;gap:0;padding:16px 20px}
+.status-step{display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:12px;white-space:nowrap}
+.status-step .dot{width:10px;height:10px;border:1px solid var(--border)}
+.status-step.done .dot{background:var(--accent);border-color:var(--accent)}
+.status-step.current .dot{border-color:var(--accent);border-width:2px}
+.status-arrow{color:var(--muted);margin:0 4px}
+@media(max-width:1024px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.section-row.two{grid-template-columns:1fr}.section-card+.section-card{border-left:2px solid var(--border)}}
+@media(max-width:640px){.sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.menu-toggle{display:block}.sidebar-overlay{display:none;position:fixed;inset:0;background:oklch(15% 0.02 100 / .4);z-index:99}.sidebar-overlay.active{display:block}.content{padding:20px 16px}.topbar{padding:12px 16px}.topbar-title{font-size:22px}.kpi-grid{grid-template-columns:1fr}.kpi-card+.kpi-card{border-left:2px solid var(--border)}.kpi-value{font-size:28px}.user-pill span{display:none}.filter-bar{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><h1>SALES<br>DASHBOARD</h1><p class="tagline">營運控制台 v1.0</p></div>
+  <nav class="sidebar-nav">
+    <a href="index.html"><span class="nav-icon">◼</span><span class="nav-label">總覽</span></a>
+    <a href="marketing-stats.html"><span class="nav-icon">◈</span><span class="nav-label">行銷統計</span><span class="nav-badge">3</span></a>
+    <a href="ad-tracking.html"><span class="nav-icon">◇</span><span class="nav-label">廣告追蹤</span></a>
+    <a href="analytics.html"><span class="nav-icon">◧</span><span class="nav-label">閱覽分析</span></a>
+    <a href="members.html"><span class="nav-icon">◉</span><span class="nav-label">會員管理</span><span class="nav-badge">12</span></a>
+    <a href="orders.html" class="active"><span class="nav-icon">▤</span><span class="nav-label">訂單管理</span><span class="nav-badge">新 5</span></a>
+  </nav>
+  <div class="sidebar-footer">© 2025 Sales Dashboard</div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <h2 class="topbar-title">訂單管理</h2>
+    <div class="topbar-actions">
+      <span class="topbar-date">2025.06.17 — 週三</span>
+      <div class="user-pill"><div class="user-avatar">管</div><span>營運團隊</span></div>
+    </div>
+  </header>
+  <div class="content">
+    <div class="filter-bar">
+      <span class="filter-label">搜尋：</span>
+      <input type="text" class="search-input" placeholder="訂單號、會員名稱、Email…">
+      <span class="filter-label">狀態：</span>
+      <select><option>所有狀態</option><option selected>處理中</option><option>待出貨</option><option>已完成</option><option>已取消</option><option>已退款</option></select>
+      <span class="filter-label">日期：</span>
+      <input type="date" value="2025-06-01">
+      <span class="filter-label">~</span>
+      <input type="date" value="2025-06-17">
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><span class="kpi-label">本月訂單總數</span><div class="kpi-value">3,847</div><div class="kpi-delta up">▲ +8.7% 較上月</div></div>
+      <div class="kpi-card"><span class="kpi-label">本月營收</span><div class="kpi-value">NT$ 1.28M</div><div class="kpi-delta up">▲ +12.3%</div></div>
+      <div class="kpi-card"><span class="kpi-label">平均訂單金額</span><div class="kpi-value">NT$ 3,335</div><div class="kpi-delta up">▲ +3.4%</div></div>
+      <div class="kpi-card"><span class="kpi-label">待處理訂單</span><div class="kpi-value">42</div><div class="kpi-delta down">需盡快處理</div></div>
+    </div>
+    <div class="section-row two">
+      <div class="section-card">
+        <div class="section-header"><span>訂單狀態分佈</span></div>
+        <div class="section-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>狀態</th><th>數量</th><th>金額</th><th>佔比</th></tr></thead>
+            <tbody>
+              <tr><td><span class="pill pending">待付款</span></td><td class="mono">128</td><td class="mono">NT$ 284,000</td><td class="mono">3.3%</td></tr>
+              <tr><td><span class="pill processing">處理中</span></td><td class="mono">86</td><td class="mono">NT$ 312,500</td><td class="mono">2.2%</td></tr>
+              <tr><td><span class="pill active">已完成</span></td><td class="mono">3,420</td><td class="mono">NT$ 11,200,000</td><td class="mono">88.9%</td></tr>
+              <tr><td><span class="pill cancelled">已取消</span></td><td class="mono">156</td><td class="mono">NT$ 420,000</td><td class="mono">4.1%</td></tr>
+              <tr><td><span class="pill refunded">已退款</span></td><td class="mono">57</td><td class="mono">NT$ 189,000</td><td class="mono">1.5%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><span>每日訂單趨勢</span></div>
+        <div class="section-body">
+          <div class="bar-chart">
+            <div class="bar"><div class="bar-fill" style="height:60%"></div><div class="bar-label">一</div></div>
+            <div class="bar"><div class="bar-fill" style="height:75%"></div><div class="bar-label">二</div></div>
+            <div class="bar"><div class="bar-fill" style="height:88%"></div><div class="bar-label">三</div></div>
+            <div class="bar"><div class="bar-fill" style="height:82%"></div><div class="bar-label">四</div></div>
+            <div class="bar"><div class="bar-fill" style="height:95%"></div><div class="bar-label">五</div></div>
+            <div class="bar"><div class="bar-fill" style="height:55%"></div><div class="bar-label">六</div></div>
+            <div class="bar"><div class="bar-fill" style="height:40%"></div><div class="bar-label">日</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-header">
+        <span>訂單列表</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <a href="#">匯出 CSV</a>
+          <span style="color:var(--border)">|</span>
+          <a href="#">查看全部 →</a>
+        </div>
+      </div>
+      <div class="section-body" style="padding:0;overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr><th>訂單號</th><th>會員</th><th>商品</th><th>金額</th><th>狀態</th><th>付款方式</th><th>日期</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">ORD-20250617-001</td>
+              <td>王小明 <span class="mono" style="color:var(--muted);font-size:11px">#10234</span></td>
+              <td>夏季連身裙 × 2</td>
+              <td class="mono">NT$ 4,280</td>
+              <td><span class="pill processing">處理中</span></td>
+              <td>信用卡</td>
+              <td>06/17 14:32</td>
+            </tr>
+            <tr>
+              <td class="mono">ORD-20250617-002</td>
+              <td>陳美玲 <span class="mono" style="color:var(--muted);font-size:11px">#10235</span></td>
+              <td>經典帆布袋 × 1</td>
+              <td class="mono">NT$ 1,890</td>
+              <td><span class="pill active">已完成</span></td>
+              <td>LINE Pay</td>
+              <td>06/17 13:15</td>
+            </tr>
+            <tr>
+              <td class="mono">ORD-20250617-003</td>
+              <td>林志豪 <span class="mono" style="color:var(--muted);font-size:11px">#10233</span></td>
+              <td>紳士皮夾 × 1、襪子 × 3</td>
+              <td class="mono">NT$ 6,500</td>
+              <td><span class="pill pending">待付款</span></td>
+              <td>ATM 轉帳</td>
+              <td>06/17 11:48</td>
+            </tr>
+            <tr>
+              <td class="mono">ORD-20250617-004</td>
+              <td>張雅琪 <span class="mono" style="color:var(--muted);font-size:11px">#10232</span></td>
+              <td>太陽眼鏡 × 1</td>
+              <td class="mono">NT$ 3,200</td>
+              <td><span class="pill active">已完成</span></td>
+              <td>信用卡</td>
+              <td>06/17 10:22</td>
+            </tr>
+            <tr>
+              <td class="mono">ORD-20250617-005</td>
+              <td>趙小芬 <span class="mono" style="color:var(--muted);font-size:11px">#10230</span></td>
+              <td>運動鞋 × 1</td>
+              <td class="mono">NT$ 890</td>
+              <td><span class="pill cancelled">已取消</span></td>
+              <td>信用卡</td>
+              <td>06/17 09:05</td>
+            </tr>
+            <tr>
+              <td class="mono">ORD-20250617-006</td>
+              <td>李建国 <span class="mono" style="color:var(--muted);font-size:11px">#10231</span></td>
+              <td>休閒外套 × 1</td>
+              <td class="mono">NT$ 2,100</td>
+              <td><span class="pill active">已完成</span></td>
+              <td>街口支付</td>
+              <td>06/17 08:30</td>
+            </tr>
+            <tr>
+              <td class="mono">ORD-20250616-089</td>
+              <td>黃偉翔 <span class="mono" style="color:var(--muted);font-size:11px">#10229</span></td>
+              <td>帆布鞋 × 1</td>
+              <td class="mono">NT$ 2,100</td>
+              <td><span class="pill refunded">退款申請</span></td>
+              <td>信用卡</td>
+              <td>06/16 16:42</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span>顯示 1-7 / 共 3,847 筆</span>
+        <div class="page-btns">
+          <button>‹</button>
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>…</button>
+          <button>550</button>
+          <button>›</button>
+        </div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><span>訂單流程狀態 — 範例 #ORD-20250617-001</span></div>
+      <div class="section-body">
+        <div class="status-flow">
+          <div class="status-step done"><span class="dot"></span>已確認</div>
+          <span class="status-arrow">→</span>
+          <div class="status-step current"><span class="dot"></span>處理中</div>
+          <span class="status-arrow">→</span>
+          <div class="status-step"><span class="dot"></span>出貨中</div>
+          <span class="status-arrow">→</span>
+          <div class="status-step"><span class="dot"></span>已完成</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){var s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay'),t=document.getElementById('menuToggle');t.addEventListener('click',function(){s.classList.toggle('open');o.classList.toggle('active')});o.addEventListener('click',function(){s.classList.remove('open');o.classList.remove('active')})})();
+</script>
+</body>
+</html>
