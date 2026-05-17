@@ -1,0 +1,2038 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>世豐 SHIFENG — 奇萊山單一產區高山茶</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Noto+Serif+TC:wght@300;400;500;700&family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   SHIFENG TEA · QILAI MOUNTAIN — base stylesheet
+   3 variants: ink (default dark) · mist (light) · gold (luxury)
+   ============================================================ */
+
+:root {
+  --f-display: "Cormorant Garamond", "Noto Serif TC", "Songti SC", Georgia, serif;
+  --f-body: "Noto Serif TC", "Songti SC", Georgia, serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --f-sans: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* INK (default dark) */
+  --bg: oklch(0.155 0.012 145);
+  --bg-2: oklch(0.195 0.014 145);
+  --bg-3: oklch(0.235 0.014 142);
+  --fg: oklch(0.92 0.012 130);
+  --fg-2: oklch(0.74 0.018 130);
+  --fg-3: oklch(0.52 0.018 130);
+  --line: oklch(0.32 0.014 140);
+  --line-soft: oklch(0.26 0.012 140);
+  --accent: oklch(0.78 0.10 132);
+  --accent-2: oklch(0.62 0.08 135);
+  --paper: oklch(0.92 0.012 130);
+}
+
+[data-theme="mist"] {
+  --bg: oklch(0.965 0.008 110);
+  --bg-2: oklch(0.93 0.012 110);
+  --bg-3: oklch(0.89 0.014 115);
+  --fg: oklch(0.22 0.018 145);
+  --fg-2: oklch(0.40 0.022 140);
+  --fg-3: oklch(0.55 0.018 138);
+  --line: oklch(0.78 0.018 130);
+  --line-soft: oklch(0.86 0.014 120);
+  --accent: oklch(0.45 0.08 140);
+  --accent-2: oklch(0.55 0.07 138);
+  --paper: oklch(0.22 0.018 145);
+}
+
+[data-theme="gold"] {
+  --bg: oklch(0.13 0.012 60);
+  --bg-2: oklch(0.17 0.014 65);
+  --bg-3: oklch(0.21 0.016 65);
+  --fg: oklch(0.92 0.018 80);
+  --fg-2: oklch(0.74 0.030 78);
+  --fg-3: oklch(0.55 0.030 75);
+  --line: oklch(0.35 0.020 70);
+  --line-soft: oklch(0.27 0.018 68);
+  --accent: oklch(0.82 0.10 85);
+  --accent-2: oklch(0.68 0.10 82);
+  --paper: oklch(0.92 0.018 80);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--fg); }
+body {
+  font-family: var(--f-body);
+  font-feature-settings: "kern", "liga", "calt";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  line-height: 1.5;
+  transition: background-color .6s ease, color .6s ease;
+}
+img { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--accent); color: var(--bg); }
+
+.mono { font-family: var(--f-mono); font-feature-settings: "ss01"; }
+.serif { font-family: var(--f-display); }
+.uc { text-transform: uppercase; letter-spacing: 0.14em; }
+.eyebrow { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3); }
+.hairline { height: 1px; background: var(--line); width: 100%; }
+.vline { width: 1px; background: var(--line); }
+
+.container { width: 100%; max-width: 1480px; margin: 0 auto; padding: 0 56px; }
+@media (max-width: 720px) { .container { padding: 0 24px; } }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 50;
+  padding: 22px 56px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 32px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+.nav > * { pointer-events: auto; }
+.nav .brand {
+  display: flex; gap: 14px; align-items: baseline;
+  color: var(--paper);
+}
+.nav .brand .mark {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 22px;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1;
+}
+.nav .brand .sub { font-size: 10px; opacity: 0.8; }
+.nav .links { display: flex; gap: 28px; justify-content: center; color: var(--paper); }
+.nav .links a:hover { color: var(--accent); }
+.nav .right { display: flex; gap: 18px; justify-content: flex-end; align-items: center; color: var(--paper); }
+.nav .lang { display: flex; gap: 8px; }
+.nav .lang button { font: inherit; opacity: 0.5; padding: 4px 2px; letter-spacing: 0.16em; }
+.nav .lang button.on { opacity: 1; border-bottom: 1px solid var(--paper); }
+.nav .bag { display: flex; gap: 8px; align-items: center; }
+.nav .bag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; }
+@media (max-width: 900px) {
+  .nav { padding: 18px 24px; grid-template-columns: 1fr auto; gap: 16px; }
+  .nav .links { display: none; }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 80px;
+}
+.hero .ridges { position: absolute; inset: 0; z-index: 0; }
+.hero .ridges svg { position: absolute; left: 0; right: 0; width: 100%; height: 100%; }
+.hero .vignette {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: radial-gradient(120% 80% at 50% 100%, transparent 40%, color-mix(in oklab, var(--bg) 70%, transparent) 100%);
+}
+.hero .grid-marks {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.2em;
+  color: color-mix(in oklab, var(--fg-3) 80%, transparent);
+}
+.hero .grid-marks .tick { position: absolute; display: flex; align-items: center; gap: 8px; }
+.hero .grid-marks .tick::before { content: ""; width: 24px; height: 1px; background: currentColor; opacity: 0.6; }
+
+.hero .content {
+  position: relative; z-index: 3; width: 100%;
+}
+.hero .eyebrow-row {
+  display: flex; justify-content: space-between; align-items: end;
+  margin-bottom: 36px; gap: 24px;
+  color: var(--paper);
+}
+.hero .display {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(72px, 13vw, 220px);
+  line-height: 0.86;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  text-wrap: balance;
+}
+.hero .display .ln { display: block; }
+.hero .display .ital { font-style: italic; color: var(--accent); }
+.hero .display .out {
+  color: color-mix(in oklab, var(--paper) 72%, transparent);
+  opacity: 0.72;
+  text-shadow:
+    0 0 18px color-mix(in oklab, var(--accent) 10%, transparent),
+    0 0 38px color-mix(in oklab, var(--paper) 12%, transparent);
+}
+@supports (-webkit-text-stroke: 1px currentColor) {
+  .hero .display .out {
+    -webkit-text-stroke: 1px currentColor;
+    color: transparent;
+    opacity: 0.55;
+    text-shadow: none;
+  }
+}
+.hero .meta-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 60px; gap: 32px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  color: var(--paper);
+}
+.hero .meta-row .col .k { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.2em; opacity: 0.6; text-transform: uppercase; margin-bottom: 8px; }
+.hero .meta-row .col .v { font-family: var(--f-display); font-style: italic; font-size: 24px; }
+.hero .cta-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-top: 28px;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 16px 22px;
+  border: 1px solid var(--line);
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--paper);
+  transition: background .25s ease, color .25s ease, border-color .25s ease, transform .25s ease;
+}
+.btn:hover { background: var(--paper); color: var(--bg); border-color: var(--paper); }
+.btn .arr { font-family: var(--f-mono); }
+.btn.solid { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.btn.solid:hover { background: var(--paper); color: var(--bg); border-color: var(--paper); }
+
+.hero .scroll-hint {
+  position: absolute; bottom: 24px; left: 56px; z-index: 3;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--paper); opacity: 0.7;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.hero .scroll-hint .line { width: 1px; height: 40px; background: currentColor; animation: drop 1.8s ease-in-out infinite; transform-origin: top; }
+@keyframes drop { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.marquee {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  background: var(--bg);
+  padding: 22px 0;
+}
+.marquee .track {
+  display: flex; gap: 64px;
+  white-space: nowrap;
+  animation: scroll-x 38s linear infinite;
+  font-family: var(--f-display); font-style: italic;
+  font-size: 36px; color: var(--fg-2);
+}
+.marquee .track span { display: flex; align-items: center; gap: 64px; }
+.marquee .track span::after {
+  content: "✦"; font-style: normal; color: var(--accent); font-size: 14px;
+}
+@keyframes scroll-x {
+  to { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   ORIGIN
+   ============================================================ */
+.section { padding: 140px 0; position: relative; }
+.section .head {
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: 48px;
+  margin-bottom: 80px;
+}
+.section .head .eb { padding-top: 10px; }
+.section .head h2 {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(40px, 5.2vw, 84px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.section .head h2 em { font-style: italic; color: var(--accent); }
+.section .lede {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--fg-2);
+  max-width: 58ch;
+  margin-top: 28px;
+}
+@media (max-width: 800px) {
+  .section { padding: 96px 0; }
+  .section .head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 48px; }
+}
+
+.origin-photo {
+  position: relative;
+  margin-top: 60px;
+  aspect-ratio: 16/9;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.origin-photo img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: saturate(0.85) contrast(1.02);
+}
+.origin-photo .caption {
+  position: absolute; left: 18px; bottom: 16px;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--paper); mix-blend-mode: difference;
+}
+
+.altitude-chart {
+  position: relative;
+  margin-top: 80px;
+  height: 460px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.altitude-chart .ygrid { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--line-soft); display: flex; justify-content: space-between; padding: 0 0 0 0; }
+.altitude-chart .ygrid .ylabel {
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em;
+  color: var(--fg-3); transform: translateY(-50%); padding: 0 6px; background: var(--bg);
+}
+.altitude-chart .peaks {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; justify-content: space-around;
+  padding: 0 4%;
+}
+.altitude-chart .peak {
+  position: relative;
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer;
+}
+.altitude-chart .peak .stem {
+  width: 1px; background: var(--fg-2);
+  position: relative;
+  transition: background .3s ease;
+}
+.altitude-chart .peak .stem::before {
+  content: ""; position: absolute; left: 50%; bottom: 100%;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, 50%);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 20%, transparent);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.altitude-chart .peak:hover .stem::before { transform: translate(-50%, 50%) scale(1.4); }
+.altitude-chart .peak .label {
+  position: absolute; bottom: -64px;
+  text-align: center;
+  width: 200px;
+}
+.altitude-chart .peak .code { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.2em; color: var(--fg-3); }
+.altitude-chart .peak .name { font-family: var(--f-display); font-style: italic; font-size: 22px; margin-top: 4px; }
+.altitude-chart .peak .alt { font-family: var(--f-mono); font-size: 11px; color: var(--accent); margin-top: 4px; letter-spacing: 0.1em; }
+.altitude-chart .peak .note { font-size: 12px; color: var(--fg-3); margin-top: 8px; }
+.altitude-chart .peak .alt-big {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, -16px);
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(32px, 3.4vw, 54px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--paper);
+  white-space: nowrap;
+  text-shadow: 0 2px 16px color-mix(in oklab, var(--bg) 80%, transparent);
+  pointer-events: none;
+  transition: color .3s ease, transform .3s ease;
+}
+.altitude-chart .peak:hover .alt-big { color: var(--accent); transform: translate(-50%, -22px); }
+
+/* ============================================================
+   FOGGY EDGE — soft feathered image edge
+   ============================================================ */
+.foggy-edge {
+  position: relative;
+  isolation: isolate;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(ellipse 112% 108% at 50% 50%, #000 48%, rgba(0,0,0,.94) 58%, rgba(0,0,0,.72) 70%, rgba(0,0,0,.38) 82%, transparent 100%);
+          mask-image: radial-gradient(ellipse 112% 108% at 50% 50%, #000 48%, rgba(0,0,0,.94) 58%, rgba(0,0,0,.72) 70%, rgba(0,0,0,.38) 82%, transparent 100%);
+}
+.foggy-edge::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 78% 74% at 50% 50%, transparent 58%, color-mix(in oklab, var(--paper) 7%, transparent) 73%, color-mix(in oklab, var(--bg) 18%, transparent) 100%);
+  mix-blend-mode: screen;
+  opacity: 0.95;
+}
+.foggy-edge .caption, .foggy-edge .corner { z-index: 5; }
+
+/* ============================================================
+   STORY
+   ============================================================ */
+.story-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+@media (max-width: 900px) { .story-grid { grid-template-columns: 1fr; gap: 40px; } }
+.story-grid p {
+  font-size: 17px; line-height: 1.7; color: var(--fg-2);
+  margin-bottom: 22px;
+  text-indent: 2em;
+}
+.story-grid .img-wrap {
+  position: relative; aspect-ratio: 4/5;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.story-grid .img-wrap .caption {
+  position: absolute; left: 14px; bottom: 14px;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--paper); mix-blend-mode: difference;
+}
+.story-grid .img-wrap .corner {
+  position: absolute; right: 14px; top: 14px;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em;
+  color: var(--paper); mix-blend-mode: difference;
+}
+
+.stat-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-top: 80px;
+}
+.stat-row .cell {
+  background: var(--bg);
+  padding: 32px 24px;
+}
+.stat-row .n {
+  font-family: var(--f-display);
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+.stat-row .n em { color: var(--accent); font-style: italic; }
+.stat-row .l {
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--fg-3); margin-top: 14px;
+}
+@media (max-width: 720px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+
+/* ============================================================
+   SERIES
+   ============================================================ */
+.series-list { border-top: 1px solid var(--line); }
+.series-row {
+  display: grid;
+  grid-template-columns: 72px 1.4fr 1fr 90px 110px 1fr;
+  gap: 24px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 22px 8px;
+  position: relative;
+  transition: background .25s ease, padding .25s ease;
+  cursor: pointer;
+}
+.series-row:hover { background: var(--bg-2); padding-left: 24px; }
+.series-row .thumb {
+  width: 64px; height: 64px;
+  border: 1px solid var(--line-soft);
+  overflow: hidden;
+  background: var(--bg-2);
+  flex-shrink: 0;
+}
+.series-row .thumb img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: saturate(0.85) contrast(1.02);
+  transition: transform .35s ease;
+}
+.series-row:hover .thumb img { transform: scale(1.06); }
+.series-row .idx-small {
+  display: block;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--fg-3); margin-bottom: 4px;
+}
+.series-row .cn { font-family: var(--f-display); font-size: 30px; font-weight: 300; letter-spacing: -0.01em; }
+.series-row .en { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+.series-row .w { font-family: var(--f-mono); font-size: 11px; color: var(--fg-2); }
+.series-row .p { font-family: var(--f-display); font-style: italic; font-size: 22px; color: var(--fg); }
+.series-row .tag {
+  display: inline-block;
+  font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid var(--accent); color: var(--accent);
+  margin-left: 12px;
+}
+.series-row .add {
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--fg-3);
+  text-align: right;
+  display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+  opacity: 0; transform: translateX(-8px); transition: all .3s ease;
+}
+.series-row:hover .add { opacity: 1; transform: translateX(0); color: var(--fg); }
+.series-row .add .arr { width: 24px; height: 1px; background: currentColor; position: relative; }
+.series-row .add .arr::after { content: ""; position: absolute; right: 0; top: -3px; border: 1px solid currentColor; border-left: 0; border-bottom: 0; width: 7px; height: 7px; transform: rotate(45deg); }
+
+@media (max-width: 1100px) {
+  .series-row { grid-template-columns: 64px 1.4fr 90px 1fr; }
+  .series-row .en, .series-row .w { display: none; }
+}
+@media (max-width: 640px) {
+  .series-row { grid-template-columns: 56px 1fr 1fr; padding: 18px 4px; }
+  .series-row .add { display: none; }
+  .series-row .cn { font-size: 22px; }
+  .series-row .thumb { width: 56px; height: 56px; }
+}
+
+/* ============================================================
+   GIFT (3D)
+   ============================================================ */
+.gift {
+  background: var(--bg-2);
+  padding: 140px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.gift-grid {
+  display: grid; grid-template-columns: 1fr 1.05fr; gap: 64px;
+  align-items: center;
+}
+@media (max-width: 900px) { .gift-grid { grid-template-columns: 1fr; gap: 48px; } }
+
+.gift-stage {
+  perspective: 1400px;
+  height: 540px;
+  position: relative;
+  user-select: none;
+  cursor: grab;
+}
+.gift-stage:active { cursor: grabbing; }
+.gift-stage .floor {
+  position: absolute; left: 50%; bottom: 22%;
+  width: 360px; height: 30px;
+  transform: translateX(-50%) rotateX(80deg);
+  background: radial-gradient(ellipse at center, color-mix(in oklab, var(--accent) 35%, transparent) 0%, transparent 65%);
+  filter: blur(8px);
+  opacity: 0.55;
+}
+.box {
+  position: absolute; top: 50%; left: 50%;
+  width: 320px; height: 200px;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -55%) rotateX(-18deg) rotateY(-28deg);
+  transition: transform .15s ease;
+}
+.box .face {
+  position: absolute;
+  background: linear-gradient(160deg, var(--bg-3) 0%, var(--bg-2) 100%);
+  border: 1px solid var(--line);
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 22px;
+  color: var(--fg);
+}
+.box .face .brand-stamp {
+  font-family: var(--f-display); font-style: italic; font-size: 30px;
+  color: var(--paper);
+}
+.box .face .brand-stamp .small {
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.24em; font-style: normal;
+  color: var(--fg-3); display: block; margin-top: 6px;
+}
+.box .face .seal {
+  align-self: flex-end;
+  font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.22em; color: var(--accent);
+  border: 1px solid var(--accent); padding: 6px 10px;
+}
+.box .face .side-text {
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--fg-3); writing-mode: vertical-rl;
+}
+.box .face .lid-line {
+  position: absolute; left: 0; right: 0; top: 38%; height: 1px;
+  background: var(--line);
+}
+.box .face.front { width: 320px; height: 200px; transform: translateZ(60px); }
+.box .face.back { width: 320px; height: 200px; transform: rotateY(180deg) translateZ(60px); }
+.box .face.right { width: 120px; height: 200px; left: 320px; transform: rotateY(90deg) translateZ(-60px) translateX(60px); }
+.box .face.left { width: 120px; height: 200px; left: -120px; transform: rotateY(-90deg) translateZ(60px) translateX(-60px); }
+.box .face.top { width: 320px; height: 120px; top: -120px; transform: rotateX(90deg) translateZ(60px) translateY(60px); }
+.box .face.bottom { width: 320px; height: 120px; top: 200px; transform: rotateX(-90deg) translateZ(60px) translateY(-60px); }
+
+.box .face.top .jars { display: flex; gap: 18px; height: 100%; align-items: center; justify-content: center; }
+.box .face.top .jar {
+  width: 60px; height: 80px;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 30%, var(--bg-3)) 0%, var(--bg-3) 60%);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  position: relative;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--paper) 8%, transparent);
+}
+.box .face.top .jar::before {
+  content: ""; position: absolute; left: 8px; right: 8px; top: -6px; height: 12px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  border-radius: 2px;
+}
+.box .face.top .jar::after {
+  content: attr(data-n);
+  position: absolute; left: 0; right: 0; bottom: 10px;
+  font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.2em; text-align: center; color: var(--paper); opacity: 0.85;
+}
+
+.gift-meta {
+  padding-left: 16px;
+}
+.gift-spec { margin-top: 28px; border-top: 1px solid var(--line); }
+.gift-spec .row {
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.gift-spec .row .k { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); }
+.gift-spec .row .v { font-family: var(--f-display); font-size: 18px; }
+.gift-actions { display: flex; gap: 14px; align-items: center; margin-top: 32px; flex-wrap: wrap; }
+.gift-actions .hint { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; color: var(--fg-3); text-transform: uppercase; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot {
+  padding: 100px 0 40px;
+  border-top: 1px solid var(--line);
+}
+.foot-grid {
+  display: grid; grid-template-columns: 1.4fr 1fr 1.2fr; gap: 64px;
+  margin-bottom: 80px;
+}
+.foot .mark-big {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(48px, 8vw, 120px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.foot .mark-big em { font-style: italic; color: var(--accent); }
+.foot .info { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.06em; color: var(--fg-2); line-height: 1.9; }
+.foot .news .label { font-family: var(--f-display); font-style: italic; font-size: 22px; margin-bottom: 18px; }
+.foot .news form { display: flex; border-bottom: 1px solid var(--line); }
+.foot .news input { flex: 1; background: transparent; border: 0; padding: 12px 0; font: inherit; font-family: var(--f-mono); font-size: 13px; color: var(--fg); outline: none; }
+.foot .news input::placeholder { color: var(--fg-3); }
+.foot .news button { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); padding: 12px 8px; }
+.foot .bot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 32px; border-top: 1px solid var(--line);
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3);
+}
+@media (max-width: 900px) { .foot-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+/* ============================================================
+   Section reveal animation
+   ============================================================ */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s ease, transform .9s ease; }
+.reveal.on { opacity: 1; transform: translateY(0); }
+.reveal-stagger > * { opacity: 0; transform: translateY(20px); transition: opacity .8s ease, transform .8s ease; }
+.reveal-stagger.on > *:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger.on > *:nth-child(2) { transition-delay: 80ms; }
+.reveal-stagger.on > *:nth-child(3) { transition-delay: 160ms; }
+.reveal-stagger.on > *:nth-child(4) { transition-delay: 240ms; }
+.reveal-stagger.on > *:nth-child(5) { transition-delay: 320ms; }
+.reveal-stagger.on > *:nth-child(6) { transition-delay: 400ms; }
+.reveal-stagger.on > * { opacity: 1; transform: translateY(0); }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<template id="__bundler_thumbnail" data-bg-color="#1a2218">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#1a2218"/>
+    <path d="M0 600 L120 540 L240 580 L380 480 L520 540 L660 460 L820 520 L980 440 L1100 500 L1200 470 L1200 800 L0 800 Z" fill="#222b1e"/>
+    <path d="M0 660 L160 620 L320 650 L480 580 L640 630 L800 570 L960 620 L1100 590 L1200 610 L1200 800 L0 800 Z" fill="#2c3825"/>
+    <path d="M0 720 L200 700 L400 720 L600 690 L820 710 L1000 700 L1200 715 L1200 800 L0 800 Z" fill="#3a4830"/>
+    <circle cx="860" cy="280" r="110" fill="#9bb285" opacity="0.35"/>
+    <text x="600" y="430" text-anchor="middle" fill="#e8ecd7" font-family="Cormorant Garamond, Noto Serif TC, serif" font-style="italic" font-size="140" font-weight="300">世豐</text>
+    <text x="600" y="475" text-anchor="middle" fill="#9bb285" font-family="IBM Plex Mono, monospace" font-size="20" letter-spacing="8">SHIFENG TEA</text>
+  </svg>
+</template>
+
+<div id="root"></div>
+
+<!-- ── i18n ── -->
+<script>
+window.I18N = {
+  "zh-TW": {
+    nav: { story: "山與人", origin: "奇萊風土", series: "茶品", gift: "禮盒", cart: "購物袋" },
+    hero: {
+      eyebrow: "EST. 2011 — 奇萊山單一產區",
+      title_a: "來自雲霧深處",
+      title_b: "的一抹",
+      title_c: "冷香。",
+      sub: "海拔兩千零五十公尺。奇萊山南麓的茶,用整個冬天等你。",
+      cta_primary: "選一款冷香",
+      cta_secondary: "讀蔡晃年的故事",
+    },
+    marquee: ["奇萊山", "2050 公尺", "冷香", "黑岩礫石", "雲霧 280 天", "南麓茶區"],
+    origin: {
+      eyebrow: "01 / 風土",
+      title: "一座山,一杯茶。",
+      lede: "奇萊山南麓,南投仁愛鄉與花蓮交界。茶區海拔 2,050 公尺,終年雲霧、黑岩礫石、日夜溫差超過十二度。茶葉生長慢、葉肉厚、香氣藏得深——這就是「冷香」的由來。我們不做別座山,因為這一座已經夠了。",
+      peaks: [
+        { code: "A", name: "上園", alt: "2150m", note: "霧氣最重,冷香最深" },
+        { code: "B", name: "主園", alt: "2050m", note: "黑岩礫石,礦物厚實" },
+        { code: "C", name: "下園", alt: "1900m", note: "日照足,葉肉飽滿" },
+        { code: "D", name: "茶廠", alt: "1800m", note: "當日採摘,當日完成" },
+      ],
+    },
+    story: {
+      eyebrow: "02 / 山與人",
+      title: "從台北上山——蓋了屬於自己的茶廠",
+      body_1: "二十年前,在台北的辦公室一個轉念的緣分,讓我喝到奇萊山的茶——那種冷冷地、慢慢浮起來的香氣,從此沒辦法忘。",
+      body_2: "搬上山,在南麓 2,050 公尺買下一塊地。2011 年,蓋了自己的茶廠,做自己的茶。不浪漫,是一個決定。茶好不好,喝了就知道。",
+      stat: [
+        { n: "2050", l: "茶區海拔(公尺)" },
+        { n: "14", l: "年自有茶廠" },
+        { n: "04:00", l: "凌晨手採時段" },
+        { n: "5★", l: "衛生安全茶廠認證" },
+      ],
+    },
+    series: {
+      eyebrow: "03 / 茶品",
+      title: "四款茶,同一座山。",
+      items: [
+        { idx: "N°01", cn: "奇萊春茶", en: "Qilai Spring Oolong", price: "NT$ 1,800", weight: "75g", tag: "" },
+        { idx: "N°02", cn: "奇萊冬片", en: "Qilai Winter Sprout", price: "NT$ 3,200", weight: "75g", tag: "限量" },
+        { idx: "N°03", cn: "奇萊蜜香烏龍", en: "Qilai Honey Oolong", price: "NT$ 2,200", weight: "75g", tag: "招牌" },
+        { idx: "N°04", cn: "奇萊焙香烏龍", en: "Qilai Roasted Oolong", price: "NT$ 1,600", weight: "75g", tag: "" },
+      ],
+      add: "加入購物袋",
+    },
+    gift: {
+      eyebrow: "04 / 禮盒",
+      title: "把這座山,裝進盒裡。",
+      lede: "三入手工木盒,內襯日本和紙,可選刻字。一個盒子,一座山的春夏秋冬。",
+      spec: [
+        ["材質", "台灣相思木 / 和紙內襯"],
+        ["尺寸", "240 × 160 × 70 mm"],
+        ["內容", "75g × 3 罐"],
+        ["刻字", "免費 (12 字內)"],
+      ],
+      cta: "客製這個禮盒",
+      hint_drag: "拖曳旋轉 / DRAG TO ROTATE",
+    },
+    footer: {
+      address: "南投縣仁愛鄉 · 奇萊山南麓",
+      hours: "週二 – 週日  10:00 – 18:00",
+      newsletter: "山上來信",
+      placeholder: "輸入電子郵件",
+      submit: "訂閱",
+      rights: "© 2026 世豐製茶廠 SHIFENG TEA — 蓋自己的茶廠,做自己的茶",
+    },
+  },
+  "zh-CN": {
+    nav: { story: "山与人", origin: "奇莱风土", series: "茶品", gift: "礼盒", cart: "购物袋" },
+    hero: {
+      eyebrow: "EST. 2011 — 奇莱山单一产区",
+      title_a: "在云雾里",
+      title_b: "等一杯",
+      title_c: "冷香。",
+      sub: "海拔两千零五十米。奇莱山南麓的茶,用整个冬天等你。",
+      cta_primary: "选一款冷香",
+      cta_secondary: "读蔡晃年的故事",
+    },
+    marquee: ["奇莱山", "2050 米", "冷香", "黑岩砾石", "云雾 280 天", "南麓茶区"],
+    origin: {
+      eyebrow: "01 / 风土",
+      title: "一座山,一杯茶。",
+      lede: "奇莱山南麓,南投仁爱乡与花莲交界。茶区海拔 2,050 米,终年云雾、黑岩砾石、日夜温差超过十二度。茶叶生长慢、叶肉厚、香气藏得深——这就是「冷香」的由来。我们不做别座山,因为这一座已经够了。",
+      peaks: [
+        { code: "A", name: "上园", alt: "2150m", note: "雾气最重,冷香最深" },
+        { code: "B", name: "主园", alt: "2050m", note: "黑岩砾石,矿物厚实" },
+        { code: "C", name: "下园", alt: "1900m", note: "日照足,叶肉饱满" },
+        { code: "D", name: "茶厂", alt: "1800m", note: "当日采摘,当日完成" },
+      ],
+    },
+    story: {
+      eyebrow: "02 / 山与人",
+      title: "我从台北上山——盖了自己的茶厂。",
+      body_1: "二十年前,我在台北的办公室。一个转念的缘分,让我喝到奇莱山的茶——那种冷冷地、慢慢浮起来的香气,从此没办法忘。",
+      body_2: "后来我搬上山,在南麓 2,050 米买下一块地。2011 年,我盖了自己的茶厂,做自己的茶。不浪漫,是一个决定。茶好不好,喝了就知道。",
+      stat: [
+        { n: "2050", l: "茶区海拔(米)" },
+        { n: "14", l: "年自有茶厂" },
+        { n: "04:00", l: "凌晨手采时段" },
+        { n: "5★", l: "卫生安全茶厂认证" },
+      ],
+    },
+    series: {
+      eyebrow: "03 / 茶品",
+      title: "四款茶,同一座山。",
+      items: [
+        { idx: "N°01", cn: "奇莱春茶", en: "Qilai Spring Oolong", price: "¥ 420", weight: "75g", tag: "" },
+        { idx: "N°02", cn: "奇莱冬片", en: "Qilai Winter Sprout", price: "¥ 750", weight: "75g", tag: "限量" },
+        { idx: "N°03", cn: "奇莱蜜香乌龙", en: "Qilai Honey Oolong", price: "¥ 520", weight: "75g", tag: "招牌" },
+        { idx: "N°04", cn: "奇莱焙香乌龙", en: "Qilai Roasted Oolong", price: "¥ 380", weight: "75g", tag: "" },
+      ],
+      add: "加入购物袋",
+    },
+    gift: {
+      eyebrow: "04 / 礼盒",
+      title: "把这座山,装进盒里。",
+      lede: "三入手工木盒,内衬日本和纸,可选刻字。一个盒子,一座山的春夏秋冬。",
+      spec: [
+        ["材质", "台湾相思木 / 和纸内衬"],
+        ["尺寸", "240 × 160 × 70 mm"],
+        ["内容", "75g × 3 罐"],
+        ["刻字", "免费 (12 字内)"],
+      ],
+      cta: "定制这个礼盒",
+      hint_drag: "拖曳旋转 / DRAG TO ROTATE",
+    },
+    footer: {
+      address: "南投县仁爱乡 · 奇莱山南麓",
+      hours: "周二 – 周日  10:00 – 18:00",
+      newsletter: "山上来信",
+      placeholder: "输入电子邮件",
+      submit: "订阅",
+      rights: "© 2026 世丰制茶厂 SHIFENG TEA — 盖自己的茶厂,做自己的茶",
+    },
+  },
+  "en": {
+    nav: { story: "Story", origin: "Origin", series: "Tea", gift: "Gift", cart: "Bag" },
+    hero: {
+      eyebrow: "EST. 2011 — SINGLE-ORIGIN QILAI MOUNTAIN",
+      title_a: "Wait",
+      title_b: "in the mist",
+      title_c: "for cold fragrance.",
+      sub: "2,050 metres on the southern slope of Qilai Mountain. The tea takes a whole winter to be ready.",
+      cta_primary: "Choose your cold fragrance",
+      cta_secondary: "Read the founder's story",
+    },
+    marquee: ["QILAI", "2,050 M", "COLD FRAGRANCE", "BLACK ROCK", "MIST 280 DAYS", "SOUTH SLOPE"],
+    origin: {
+      eyebrow: "01 / ORIGIN",
+      title: "One mountain, one cup.",
+      lede: "The southern slope of Qilai Mountain, on the border of Nantou and Hualien. Our garden sits at 2,050 metres — black rock, year-round mist, day-night swings over 12°C. Slow leaves, thick flesh, hidden aroma — this is what we call cold fragrance. We don't farm anywhere else. One mountain is enough.",
+      peaks: [
+        { code: "A", name: "Upper", alt: "2150m", note: "Heaviest mist, deepest cold fragrance" },
+        { code: "B", name: "Main", alt: "2050m", note: "Black rock, mineral body" },
+        { code: "C", name: "Lower", alt: "1900m", note: "More sun, fuller leaf" },
+        { code: "D", name: "Factory", alt: "1800m", note: "Picked and finished the same day" },
+      ],
+    },
+    story: {
+      eyebrow: "02 / STORY",
+      title: "I left Taipei——and built my own tea factory.",
+      body_1: "Twenty years ago I worked in a Taipei office. One twist of fate brought me a cup of Qilai tea — that cold, slow-rising aroma. I never forgot it.",
+      body_2: "Later I moved up the mountain, bought a piece of land at 2,050 metres on the southern slope. In 2011 I built my own factory, made my own tea. Not romance — a decision. Whether the tea is good, you'll know when you drink it.",
+      stat: [
+        { n: "2050", l: "Garden altitude (m)" },
+        { n: "14", l: "Years of our own factory" },
+        { n: "04:00", l: "Hand-pick hour" },
+        { n: "5★", l: "COA hygiene rating" },
+      ],
+    },
+    series: {
+      eyebrow: "03 / TEA",
+      title: "Four teas, one mountain.",
+      items: [
+        { idx: "N°01", cn: "Qilai Spring Oolong", en: "High Mountain Oolong", price: "US$ 56", weight: "75g", tag: "" },
+        { idx: "N°02", cn: "Qilai Winter Sprout", en: "Cold-finish Oolong", price: "US$ 100", weight: "75g", tag: "Limited" },
+        { idx: "N°03", cn: "Qilai Honey Oolong", en: "Insect-bitten Oolong", price: "US$ 68", weight: "75g", tag: "Signature" },
+        { idx: "N°04", cn: "Qilai Roasted Oolong", en: "Charcoal-roasted", price: "US$ 50", weight: "75g", tag: "" },
+      ],
+      add: "Add to bag",
+    },
+    gift: {
+      eyebrow: "04 / GIFT",
+      title: "A mountain, boxed.",
+      lede: "Three-jar acacia box, washi-paper lining, optional engraving. One box, the four seasons of one mountain.",
+      spec: [
+        ["Material", "Taiwanese acacia · washi lining"],
+        ["Size", "240 × 160 × 70 mm"],
+        ["Contents", "75g × 3 jars"],
+        ["Engraving", "Free (≤ 12 chars)"],
+      ],
+      cta: "Customize this box",
+      hint_drag: "DRAG TO ROTATE",
+    },
+    footer: {
+      address: "Ren'ai, Nantou · Southern slope of Qilai Mountain",
+      hours: "Tue – Sun  10:00 – 18:00",
+      newsletter: "A letter from the mountain",
+      placeholder: "Your email",
+      submit: "Subscribe",
+      rights: "© 2026 SHIFENG TEA — Built my own factory. Made my own tea.",
+    },
+  },
+};
+</script>
+
+<!-- ── tweaks-panel.jsx ── -->
+<script type="text/babel">
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+  .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+  .twk-num{display:flex;align-items:center;box-sizing:border-box;min-width:0;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
+  }, []);
+  return [values, setTweak];
+}
+
+function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const hasDeckStage = React.useMemo(
+    () => typeof document !== 'undefined' && !!document.querySelector('deck-stage'),
+    [],
+  );
+  const [railEnabled, setRailEnabled] = React.useState(
+    () => hasDeckStage && !!document.querySelector('deck-stage')?._railEnabled,
+  );
+  React.useEffect(() => {
+    if (!hasDeckStage || railEnabled) return undefined;
+    const onMsg = (e) => {
+      if (e.data && e.data.type === '__omelette_rail_enabled') setRailEnabled(true);
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, [hasDeckStage, railEnabled]);
+  const [railVisible, setRailVisible] = React.useState(() => {
+    try { return localStorage.getItem('deck-stage.railVisible') !== '0'; } catch (e) { return true; }
+  });
+  const toggleRail = (on) => {
+    setRailVisible(on);
+    window.postMessage({ type: '__deck_rail_visible', on }, '*');
+  };
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" data-noncommentable=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">
+          {children}
+          {hasDeckStage && railEnabled && !noDeckControls && (
+            <TweakSection label="Deck">
+              <TweakToggle label="Thumbnail rail" value={railVisible} onChange={toggleRail} />
+            </TweakSection>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    const resolve = (s) => {
+      const m = options.find((o) => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return <TweakSelect label={label} value={value} options={options}
+                        onChange={(s) => onChange(resolve(s))} />;
+  }
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+
+const __TwkCheck = ({ light }) => (
+  <svg viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
+          strokeLinecap="round" strokeLinejoin="round"
+          stroke={light ? 'rgba(0,0,0,.78)' : '#fff'} />
+  </svg>
+);
+
+function TweakColor({ label, value, options, onChange }) {
+  if (!options || !options.length) {
+    return (
+      <div className="twk-row twk-row-h">
+        <div className="twk-lbl"><span>{label}</span></div>
+        <input type="color" className="twk-swatch" value={value}
+               onChange={(e) => onChange(e.target.value)} />
+      </div>
+    );
+  }
+  const key = (o) => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return (
+    <TweakRow label={label}>
+      <div className="twk-chips" role="radiogroup">
+        {options.map((o, i) => {
+          const colors = Array.isArray(o) ? o : [o];
+          const [hero, ...rest] = colors;
+          const sup = rest.slice(0, 4);
+          const on = key(o) === cur;
+          return (
+            <button key={i} type="button" className="twk-chip" role="radio"
+                    aria-checked={on} data-on={on ? '1' : '0'}
+                    aria-label={colors.join(', ')} title={colors.join(' · ')}
+                    style={{ background: hero }}
+                    onClick={() => onChange(o)}>
+              {sup.length > 0 && (
+                <span>
+                  {sup.map((c, j) => <i key={j} style={{ background: c }} />)}
+                </span>
+              )}
+              {on && <__TwkCheck light={__twkIsLight(hero)} />}
+            </button>
+          );
+        })}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+</script>
+
+<!-- ── hero.jsx ── -->
+<script type="text/babel">
+const { useEffect, useRef, useState } = React;
+
+function MountainRidge({ y, opacity, color, seed = 1, height = 0.42 }) {
+  const W = 1440;
+  const H = 600;
+  const points = [];
+  const baseY = H * (1 - height);
+  let lastY = baseY;
+  const seg = 28 + seed * 3;
+  for (let i = 0; i <= seg; i++) {
+    const x = (i / seg) * W;
+    const rand = Math.sin(i * 1.7 + seed * 4.31) * 0.5 + Math.sin(i * 0.9 + seed * 2.13) * 0.5;
+    const peakHeight = (50 + Math.abs(rand) * 110) * (1 - seed * 0.15);
+    const y2 = baseY + rand * 18 - peakHeight * Math.max(0, Math.sin(i / seg * Math.PI));
+    lastY = lastY * 0.4 + y2 * 0.6;
+    points.push([x, lastY]);
+  }
+  const d = "M0," + H + " L" + points.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" L") + " L" + W + "," + H + " Z";
+
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      preserveAspectRatio="none"
+      style={{
+        transform: `translateY(${y}px)`,
+        opacity,
+        position: "absolute",
+        left: 0, right: 0, bottom: 0,
+        height: "100%",
+      }}
+    >
+      <path d={d} fill={color} />
+    </svg>
+  );
+}
+
+function HeroRidges({ scroll }) {
+  return (
+    <div className="ridges">
+      <img
+        src="assets/images/hero_dawn.png"
+        alt=""
+        style={{
+          position: "absolute", inset: 0,
+          width: "100%", height: "110%",
+          objectFit: "cover", objectPosition: "center 30%",
+          transform: `translateY(${scroll * 0.18}px) scale(1.05)`,
+          opacity: 0.92,
+          willChange: "transform",
+        }}
+      />
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        background: "linear-gradient(180deg, color-mix(in oklab, var(--bg) 25%, transparent) 0%, transparent 28%, transparent 62%, var(--bg) 100%)",
+      }} />
+    </div>
+  );
+}
+
+function Hero({ t, scroll, showGridMarks = true }) {
+  return (
+    <section className="hero" data-screen-label="01 Hero">
+      <HeroRidges scroll={scroll} />
+      <div className="vignette" />
+      {showGridMarks && (
+        <div className="grid-marks">
+          <div className="tick" style={{ left: 56, top: "20%" }}>N 24°02&apos;</div>
+          <div className="tick" style={{ left: 56, top: "40%" }}>E 121°16&apos;</div>
+          <div className="tick" style={{ right: 56, top: "26%", flexDirection: "row-reverse" }} >ALT 2050 m</div>
+        </div>
+      )}
+
+      <div className="content container">
+        <div className="eyebrow-row">
+          <span className="eyebrow" style={{ color: "var(--paper)" }}>{t.hero.eyebrow}</span>
+          <span className="mono" style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.7, color: "var(--paper)" }}>
+            Spring Harvest · 春茶頭採
+          </span>
+        </div>
+
+        <h1 className="display">
+          <span className="ln">{t.hero.title_a}</span>
+          <span className="ln ital">{t.hero.title_b}</span>
+          <span className="ln out">{t.hero.title_c}</span>
+        </h1>
+
+        <div className="meta-row">
+          <div className="col">
+            <div className="k">Estate</div>
+            <div className="v">奇萊山 南麓</div>
+          </div>
+          <div className="col">
+            <div className="k">Altitude</div>
+            <div className="v">2,050 m</div>
+          </div>
+          <div className="col">
+            <div className="k">{t.hero.sub.length > 0 ? "Quote" : "Tone"}</div>
+            <div className="v" style={{ fontSize: 16, lineHeight: 1.4, fontStyle: "normal", fontFamily: "var(--f-body)", color: "var(--paper)" }}>
+              {t.hero.sub}
+            </div>
+          </div>
+        </div>
+
+        <div className="cta-row">
+          <button className="btn solid"><span>{t.hero.cta_primary}</span><span className="arr">→</span></button>
+          <button className="btn"><span>{t.hero.cta_secondary}</span><span className="arr">→</span></button>
+        </div>
+      </div>
+
+      <div className="scroll-hint">
+        <span>Scroll</span>
+        <span className="line" />
+      </div>
+    </section>
+  );
+}
+
+window.Hero = Hero;
+</script>
+
+<!-- ── sections.jsx ── -->
+<script type="text/babel">
+const { useState: _useState, useEffect: _useEffect, useRef: _useRef } = React;
+
+function MarqueeInner({ items }) {
+  return (
+    <span>
+      {items.map((it, i) => (
+        <span key={i}>{it}</span>
+      ))}
+    </span>
+  );
+}
+
+function Marquee({ items }) {
+  return (
+    <div className="marquee">
+      <div className="track">
+        <MarqueeInner items={items} />
+        <MarqueeInner items={items} />
+        <MarqueeInner items={items} />
+      </div>
+    </div>
+  );
+}
+
+function AltitudeChart({ t }) {
+  const peaks = t.origin.peaks;
+  const max = 2300;
+  const min = 1700;
+  const altToPct = (alt) => {
+    const a = parseInt(alt);
+    return ((a - min) / (max - min)) * 100;
+  };
+  const yLabels = [2300, 2100, 1900, 1700];
+
+  return (
+    <div className="altitude-chart">
+      {yLabels.map((y, i) => {
+        const pct = ((max - y) / (max - min)) * 100;
+        return (
+          <div key={i} className="ygrid" style={{ top: pct + "%" }}>
+            <span className="ylabel">{y} m</span>
+            <span className="ylabel">{y === max ? "PEAK" : ""}</span>
+          </div>
+        );
+      })}
+      <div className="peaks">
+        {peaks.map((p, i) => {
+          const pct = altToPct(p.alt);
+          return (
+            <div key={i} className="peak" style={{ height: pct + "%" }}>
+              <div className="alt-big">{p.alt}</div>
+              <div className="stem" style={{ height: "100%" }} />
+              <div className="label">
+                <div className="code">{p.code}</div>
+                <div className="name">{p.name}</div>
+                <div className="note">{p.note}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function Origin({ t }) {
+  return (
+    <section className="section container" data-screen-label="02 Origin" id="origin">
+      <Reveal>
+        <div className="head">
+          <div className="eb"><span className="eyebrow">{t.origin.eyebrow}</span></div>
+          <div>
+            <h2>{t.origin.title.split(",")[0]},<br /><em>{t.origin.title.split(",")[1] || ""}</em></h2>
+            <p className="lede">{t.origin.lede}</p>
+          </div>
+        </div>
+      </Reveal>
+      <Reveal>
+        <div className="origin-photo foggy-edge">
+          <img src="assets/images/origin_terroir.png" alt="奇萊山黑岩礫石與茶葉特寫" />
+          <div className="caption">BLACK ROCK · 黑岩礫石 · QILAI 2050 M</div>
+        </div>
+      </Reveal>
+      <Reveal><AltitudeChart t={t} /></Reveal>
+      <div style={{ height: 120 }} />
+    </section>
+  );
+}
+
+function PlaceholderImage({ label, ratio = "4/5", n = "001" }) {
+  return (
+    <div className="img-wrap" style={{ aspectRatio: ratio }}>
+      <svg width="100%" height="100%" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice"
+        style={{ display: "block", background: "var(--bg-2)" }}>
+        <defs>
+          <pattern id={"stripes-" + n} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+            <line x1="0" y1="0" x2="0" y2="6" stroke="var(--line)" strokeWidth="1" opacity="0.5" />
+          </pattern>
+          <linearGradient id={"vg-" + n} x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="var(--bg-3)" />
+            <stop offset="100%" stopColor="var(--bg-2)" />
+          </linearGradient>
+        </defs>
+        <rect width="400" height="500" fill={"url(#vg-" + n + ")"} />
+        <rect width="400" height="500" fill={"url(#stripes-" + n + ")"} />
+        <line x1="0" y1="320" x2="400" y2="320" stroke="var(--accent)" strokeWidth="1" opacity="0.5" />
+      </svg>
+      <div className="caption">{label}</div>
+      <div className="corner">PLATE / {n}</div>
+    </div>
+  );
+}
+
+function Story({ t }) {
+  return (
+    <section className="section container" data-screen-label="03 Story" id="story">
+      <Reveal>
+        <div className="head">
+          <div className="eb"><span className="eyebrow">{t.story.eyebrow}</span></div>
+          <div>
+            <h2>{t.story.title.split("——")[0]}——<br /><em>{t.story.title.split("——")[1] || t.story.title.split(".")[1] || ""}</em></h2>
+          </div>
+        </div>
+      </Reveal>
+      <div className="story-grid">
+        <Reveal>
+          <div>
+            <p>{t.story.body_1}</p>
+            <p>{t.story.body_2}</p>
+          </div>
+        </Reveal>
+        <Reveal>
+          <div className="img-wrap foggy-edge" style={{ aspectRatio: "4/5" }}>
+            <img src="assets/images/story_founder.png" alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block",
+                       filter: "saturate(0.88) contrast(1.02)" }} />
+            <div className="caption">QILAI · 2050 M · 2011</div>
+            <div className="corner">PLATE / 002</div>
+          </div>
+        </Reveal>
+      </div>
+      <Reveal>
+        <div className="stat-row reveal-stagger">
+          {t.story.stat.map((s, i) => (
+            <div key={i} className="cell">
+              <div className="n">{s.n.includes(":") || s.n.includes("%") ? s.n : <><em>{s.n[0]}</em>{s.n.slice(1)}</>}</div>
+              <div className="l">{s.l}</div>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
+function Series({ t, onAdd }) {
+  return (
+    <section className="section container" data-screen-label="04 Series" id="series">
+      <Reveal>
+        <div className="head">
+          <div className="eb"><span className="eyebrow">{t.series.eyebrow}</span></div>
+          <div>
+            <h2>{t.series.title.split(",")[0]},<br /><em>{t.series.title.split(",")[1] || ""}</em></h2>
+          </div>
+        </div>
+      </Reveal>
+      <Reveal>
+        <div className="series-list">
+          {t.series.items.map((it, i) => {
+            const imgName = ["spring", "winter", "honey", "roasted"][i] || "spring";
+            return (
+              <div key={i} className="series-row" onClick={() => onAdd && onAdd(it)}>
+                <div className="thumb">
+                  <img src={`assets/images/tea_${imgName}.png`} alt="" />
+                </div>
+                <div className="name-col">
+                  <span className="idx-small">{it.idx}</span>
+                  <span className="cn">{it.cn}</span>
+                  {it.tag && <span className="tag">{it.tag}</span>}
+                </div>
+                <div className="en">{it.en}</div>
+                <div className="w">{it.weight}</div>
+                <div className="p">{it.price}</div>
+                <div className="add">
+                  <span>{t.series.add}</span>
+                  <span className="arr" />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
+function Reveal({ children }) {
+  const ref = _useRef(null);
+  const [on, setOn] = _useState(false);
+  _useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            setOn(true);
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -10% 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className={"reveal" + (on ? " on" : "")}>
+      {React.Children.map(children, (child) => {
+        if (!React.isValidElement(child)) return child;
+        const cls = (child.props.className || "");
+        if (cls.includes("reveal-stagger")) {
+          return React.cloneElement(child, { className: cls + (on ? " on" : "") });
+        }
+        return child;
+      })}
+    </div>
+  );
+}
+
+Object.assign(window, { Marquee, MarqueeInner, Origin, Story, Series, Reveal, PlaceholderImage, AltitudeChart });
+</script>
+
+<!-- ── giftbox.jsx ── -->
+<script type="text/babel">
+const { useState: gUseState, useEffect: gUseEffect, useRef: gUseRef } = React;
+
+function GiftBox({ t, autoRotate = true }) {
+  const stageRef = gUseRef(null);
+  const [rot, setRot] = gUseState({ x: -16, y: -32 });
+  const dragRef = gUseRef({ active: false, startX: 0, startY: 0, rotX: 0, rotY: 0 });
+
+  gUseEffect(() => {
+    if (!autoRotate) return;
+    let raf;
+    let lastT = performance.now();
+    const tick = (now) => {
+      const dt = (now - lastT) / 1000;
+      lastT = now;
+      if (!dragRef.current.active) {
+        setRot(r => ({ x: r.x, y: r.y + dt * 6 }));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [autoRotate]);
+
+  const onDown = (e) => {
+    const p = e.touches ? e.touches[0] : e;
+    dragRef.current = {
+      active: true,
+      startX: p.clientX,
+      startY: p.clientY,
+      rotX: rot.x,
+      rotY: rot.y,
+    };
+  };
+  const onMove = (e) => {
+    if (!dragRef.current.active) return;
+    const p = e.touches ? e.touches[0] : e;
+    const dx = p.clientX - dragRef.current.startX;
+    const dy = p.clientY - dragRef.current.startY;
+    setRot({
+      x: Math.max(-60, Math.min(40, dragRef.current.rotX - dy * 0.4)),
+      y: dragRef.current.rotY + dx * 0.45,
+    });
+  };
+  const onUp = () => { dragRef.current.active = false; };
+
+  gUseEffect(() => {
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("touchend", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onUp);
+    };
+  });
+
+  return (
+    <section className="gift" data-screen-label="05 Gift" id="gift">
+      <div className="container">
+        <Reveal>
+          <div className="head">
+            <div className="eb"><span className="eyebrow">{t.gift.eyebrow}</span></div>
+            <div>
+              <h2>{t.gift.title.split(".")[0]}<em>.</em></h2>
+              <p className="lede">{t.gift.lede}</p>
+            </div>
+          </div>
+        </Reveal>
+        <div className="gift-grid">
+          <div
+            className="gift-stage"
+            ref={stageRef}
+            onMouseDown={onDown}
+            onTouchStart={onDown}
+          >
+            <div className="floor" />
+            <div className="box" style={{
+              transform: `translate(-50%, -55%) rotateX(${rot.x}deg) rotateY(${rot.y}deg)`,
+              transition: dragRef.current.active ? "none" : "transform 0.15s linear",
+            }}>
+              <div className="face front">
+                <div>
+                  <div className="brand-stamp">
+                    世豐
+                    <span className="small">SHIFENG TEA · EST. 2011</span>
+                  </div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                  <div className="mono" style={{ fontSize: 9, letterSpacing: "0.24em", color: "var(--fg-3)" }}>
+                    SINGLE ORIGIN · 三入禮盒<br />
+                    QILAI HIGH MOUNTAIN
+                  </div>
+                  <div className="seal">N°01 / 04</div>
+                </div>
+                <div className="lid-line" />
+              </div>
+              <div className="face back">
+                <div className="brand-stamp" style={{ fontSize: 22 }}>
+                  奇萊一山
+                  <span className="small">ONE MOUNTAIN. ONE CUP.</span>
+                </div>
+                <div className="mono" style={{ fontSize: 9, letterSpacing: "0.2em", color: "var(--fg-3)", lineHeight: 1.8 }}>
+                  奇萊南麓 QILAI · 2050m<br/>
+                  南投仁愛 RENAI · NANTOU<br/>
+                  自有茶廠 SINCE 2011
+                </div>
+                <div className="lid-line" />
+              </div>
+              <div className="face right">
+                <div />
+                <div className="side-text">SHIFENG TEA · 世豐製茶廠</div>
+                <div />
+              </div>
+              <div className="face left">
+                <div />
+                <div className="side-text">SINCE 2011 · 奇萊山南麓</div>
+                <div />
+              </div>
+              <div className="face top">
+                <div className="jars">
+                  <div className="jar" data-n="春" />
+                  <div className="jar" data-n="冬" />
+                  <div className="jar" data-n="蜜" />
+                </div>
+              </div>
+              <div className="face bottom">
+                <div className="mono" style={{ fontSize: 9, letterSpacing: "0.2em", color: "var(--fg-3)" }}>
+                  HANDCRAFTED IN RENAI · NANTOU
+                </div>
+                <div className="seal">SEAL 世豐</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="gift-meta">
+            <div className="gift-spec">
+              {t.gift.spec.map((row, i) => (
+                <div key={i} className="row">
+                  <div className="k">{row[0]}</div>
+                  <div className="v">{row[1]}</div>
+                </div>
+              ))}
+            </div>
+            <div className="gift-actions">
+              <button className="btn solid">{t.gift.cta} <span className="arr">→</span></button>
+              <span className="hint">↻ {t.gift.hint_drag}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+window.GiftBox = GiftBox;
+</script>
+
+<!-- ── app.jsx ── -->
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const TWEAK_DEFAULTS = {
+  "theme": "ink",
+  "lang": "zh-TW",
+  "showGridMarks": true,
+  "parallax": true,
+  "autoRotateBox": true
+};
+
+function Nav({ t, lang, setLang, cart }) {
+  return (
+    <div className="nav">
+      <div className="brand">
+        <span className="mark">世豐</span>
+        <span className="sub">SHIFENG TEA · EST. 2011</span>
+      </div>
+      <nav className="links">
+        <a href="#story">{t.nav.story}</a>
+        <a href="#origin">{t.nav.origin}</a>
+        <a href="#series">{t.nav.series}</a>
+        <a href="#gift">{t.nav.gift}</a>
+      </nav>
+      <div className="right">
+        <div className="lang">
+          {[
+            ["zh-TW", "繁"],
+            ["zh-CN", "简"],
+            ["en", "EN"],
+          ].map(([k, l]) => (
+            <button key={k} className={lang === k ? "on" : ""} onClick={() => setLang(k)}>{l}</button>
+          ))}
+        </div>
+        <div className="bag">
+          {cart > 0 && <span className="dot" />}
+          <span>{t.nav.cart} ({String(cart).padStart(2, "0")})</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Footer({ t }) {
+  return (
+    <footer className="foot container">
+      <div className="foot-grid">
+        <div className="mark-big">
+          世豐<br />
+          <em>SHIFENG</em>
+        </div>
+        <div className="info">
+          <div>{t.footer.address}</div>
+          <div>{t.footer.hours}</div>
+          <div style={{ marginTop: 14 }}>+886 49 280 2011</div>
+          <div>hello@shifengtea.tw</div>
+        </div>
+        <div className="news">
+          <div className="label">{t.footer.newsletter}</div>
+          <form onSubmit={(e) => { e.preventDefault(); alert("✓"); }}>
+            <input type="email" placeholder={t.footer.placeholder} />
+            <button type="submit">{t.footer.submit} →</button>
+          </form>
+        </div>
+      </div>
+      <div className="bot">
+        <span>{t.footer.rights}</span>
+        <span>SINGLE ORIGIN · 2050 m</span>
+      </div>
+    </footer>
+  );
+}
+
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const lang = tweaks.lang;
+  const t = window.I18N[lang] || window.I18N["zh-TW"];
+  const [scroll, setScroll] = useState(0);
+  const [cart, setCart] = useState(2);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", tweaks.theme || "ink");
+  }, [tweaks.theme]);
+
+  useEffect(() => {
+    if (!tweaks.parallax) return;
+    let raf = null;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        setScroll(window.scrollY);
+        raf = null;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [tweaks.parallax]);
+
+  const onAddToCart = (item) => setCart(c => c + 1);
+
+  return (
+    <>
+      <Nav t={t} lang={lang} setLang={(v) => setTweak("lang", v)} cart={cart} />
+
+      <Hero t={t} scroll={tweaks.parallax ? scroll : 0} showGridMarks={tweaks.showGridMarks} />
+      <Marquee items={t.marquee} />
+      <Origin t={t} />
+      <Marquee items={["2050M", "COLD FRAGRANCE", "MIST", "BLACK ROCK", "DAWN PICK", "SLOW LEAF"]} />
+      <Story t={t} />
+      <Series t={t} onAdd={onAddToCart} />
+      <GiftBox t={t} autoRotate={tweaks.autoRotateBox} />
+      <Footer t={t} />
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Visual theme">
+          <TweakRadio
+            label="Palette"
+            value={tweaks.theme}
+            onChange={(v) => setTweak("theme", v)}
+            options={[
+              { value: "ink", label: "墨綠" },
+              { value: "mist", label: "雲霧" },
+              { value: "gold", label: "金茗" },
+            ]}
+          />
+        </TweakSection>
+        <TweakSection label="Language">
+          <TweakSelect
+            label="語言"
+            value={tweaks.lang}
+            onChange={(v) => setTweak("lang", v)}
+            options={[
+              { value: "zh-TW", label: "繁體中文" },
+              { value: "zh-CN", label: "简体中文" },
+              { value: "en", label: "English" },
+            ]}
+          />
+        </TweakSection>
+        <TweakSection label="Motion">
+          <TweakToggle label="Parallax scroll" value={tweaks.parallax} onChange={(v) => setTweak("parallax", v)} />
+          <TweakToggle label="Auto-rotate gift box" value={tweaks.autoRotateBox} onChange={(v) => setTweak("autoRotateBox", v)} />
+          <TweakToggle label="Show coordinates" value={tweaks.showGridMarks} onChange={(v) => setTweak("showGridMarks", v)} />
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+</body>
+</html>
